@@ -8,5 +8,10 @@ namespace ExcelService.Models
         public Font? Font { get; set; }
         public Color? Color { get; set; }
         public double? FontSize { get; set; }
+
+        public static Style Empty()
+        { 
+            return new Style();
+        }
     }
 }

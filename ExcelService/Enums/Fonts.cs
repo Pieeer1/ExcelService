@@ -2,6 +2,7 @@
 {
     public enum Font
     {
-        Calibri
+        Calibri,
+        Arial
     }
 }

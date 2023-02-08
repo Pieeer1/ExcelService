@@ -116,6 +116,18 @@ namespace ExcelService.Models
 
             Sheets.ElementAt((int)sheet)[x, y] = value; 
         }
-
+        public IEnumerable<Color?> GetDistinctColors()
+        {
+            HashSet<Color?> colors = new HashSet<Color?>();
+            foreach (Sheet sheets in Sheets)
+            {
+                colors.UnionWith(sheets.HeaderRow.Cells.Select(x => x.Color).Distinct()); //add header columns
+                foreach (Row row in sheets.Rows)
+                {
+                    colors.UnionWith(row.Cells.Select(x => x.Color).Distinct());
+                }
+            }
+            return colors;
+        }
     }
 }
