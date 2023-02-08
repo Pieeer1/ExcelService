@@ -14,7 +14,14 @@ namespace ExcelService.Models
         public IEnumerable<Sheet> Sheets { get; set; }
         public string Name { get; set; }
 
-
+        /// <summary>
+        /// Creating a WorkBook with Multiple Sheets
+        /// </summary>
+        /// <typeparam name="T">Type of Object to Convert</typeparam>
+        /// <param name="objects">2d enumerable to convert into an excel</param>
+        /// <param name="styles">list of styles optional: must be at least as long as the actual excel sheets if you want to declare at startup</param>
+        /// <param name="sheetNames">optional name of sheets</param>
+        /// <returns>Returns a new Workbook object</returns>
         public static Workbook GetWorkbookFromDataSet<T>(IEnumerable<IEnumerable<T>> objects, IEnumerable<IEnumerable<IEnumerable<Style>>>? styles = null, string[]? sheetNames = null)
         {
             List<Sheet> sheets = new List<Sheet>();
@@ -25,9 +32,17 @@ namespace ExcelService.Models
 
             return new Workbook(new List<Sheet>(sheets));
         }
-        public static Workbook GetWorkbookFromDataSet<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string[]? sheetNames = null)
+        /// <summary>
+        /// Creating a WorkBook with a single Sheet
+        /// </summary>
+        /// <typeparam name="T">Type of Object to Convert</typeparam>
+        /// <param name="objects">Enumerable to Convert into an excel table</param>
+        /// <param name="styles">Styles to add: optional, must be at least as long as the actual excel sheets if you want to declare it at startup</param>
+        /// <param name="sheetName">optional name of sheet</param>
+        /// <returns>Returns a new Workbook object</returns>
+        public static Workbook GetWorkbookFromDataSet<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? sheetName = null)
         {
-            return new Workbook(new List<Sheet>() { Sheet.GetSheetFromDataSet(objects, styles, sheetNames?[0] ?? "Sheet") });
+            return new Workbook(new List<Sheet>() { Sheet.GetSheetFromDataSet(objects, styles, sheetName ?? "Sheet") });
         }
         public void StyleWhere(string header, Func<string, bool> operation, Style style)
         {
@@ -127,7 +142,7 @@ namespace ExcelService.Models
                     colors.UnionWith(row.Cells.Select(x => x.Color).Distinct());
                 }
             }
-            return colors;
+            return colors.Where(x => x != null);
         }
     }
 }

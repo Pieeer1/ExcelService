@@ -13,18 +13,6 @@
             }
             return -1;
         }
-        public static IEnumerable<T> ToNonNullableInside<T>(this IEnumerable<T?> obj)
-        {
-            List<T> result = new List<T>();
-
-            foreach (var o in obj)
-            {
-                if (o is not null)
-                {
-                    result.Add(o);
-                }
-            }
-            return result.AsEnumerable<T>();
-        }
+        public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> o) => o.Where(x => x != null)!;
     }
 }

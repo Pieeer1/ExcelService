@@ -160,7 +160,7 @@ namespace ExcelService.Tests
         [Fact]
         public void TestGetDistinctColors()
         {
-            IEnumerable<Color?> colors = styleWorkbook.GetDistinctColors().Where(x => x is not null);
+            IEnumerable<Color?> colors = styleWorkbook.GetDistinctColors();
 
             Assert.NotEmpty(colors);
             Assert.Equal(Color.Green, colors.ElementAt(0));
