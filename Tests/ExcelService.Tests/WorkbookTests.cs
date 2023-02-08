@@ -35,6 +35,20 @@ namespace ExcelService.Tests
             Assert.Equal("B String", workbook[0, 'B', 0].Data);
             Assert.Equal("1", workbook[0, 'C', 0].Data);
             Assert.Equal("2", workbook[0, 'D', 0].Data);
+            Assert.Equal("A String1", workbook[0, 1, 0].Data);
+            Assert.Equal("B String2", workbook[0, 1, 1].Data);
+            Assert.Equal("3", workbook[0, 1, 2].Data);
+            Assert.Equal("4", workbook[0, 1, 3].Data);
+            Assert.Equal("A String1", workbook[0, 'A', 1].Data);
+            Assert.Equal("B String2", workbook[0, 'B', 1].Data);
+            Assert.Equal("3", workbook[0, 'C', 1].Data);
+            Assert.Equal("4", workbook[0, 'D', 1].Data);
+
+            Assert.Throws<IndexOutOfRangeException>(() => workbook[1, 1, 1]);
+            Assert.Throws<ArgumentOutOfRangeException>(() => workbook[0, 'A', 2]);
+            Assert.Throws<ArgumentOutOfRangeException>(() => workbook[0, 2, 0]);
+            Assert.Throws<InvalidOperationException>(() => workbook[0, 'a', 0]);
+            Assert.Throws<InvalidOperationException>(() => workbook[0, '~', 0]);
         }
 
 

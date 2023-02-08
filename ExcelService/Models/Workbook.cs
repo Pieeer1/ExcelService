@@ -74,7 +74,7 @@ namespace ExcelService.Models
 
         public Cell GetCell(uint sheet, uint x, uint y)
         {
-            if (sheet > Sheets.Count())
+            if (sheet >= Sheets.Count())
             {
                 throw new IndexOutOfRangeException($"Cannot find sheet {sheet}");
             }
@@ -87,7 +87,7 @@ namespace ExcelService.Models
             {
                 throw new InvalidOperationException("First Argument must be argument of type A-Z");
             }
-            if (sheet > Sheets.Count())
+            if (sheet >= Sheets.Count())
             {
                 throw new IndexOutOfRangeException($"Cannot find sheet {sheet}");
             }
@@ -100,7 +100,7 @@ namespace ExcelService.Models
             {
                 throw new InvalidOperationException("First Argument must be argument of type A-Z");
             }
-            if (sheet > Sheets.Count())
+            if (sheet >= Sheets.Count())
             {
                 throw new IndexOutOfRangeException($"Cannot find sheet {sheet}");
             }
@@ -113,7 +113,7 @@ namespace ExcelService.Models
             {
                 throw new InvalidOperationException("First Argument must be argument of type A-Z");
             }
-            if (sheet > Sheets.Count())
+            if (sheet >= Sheets.Count())
             {
                 throw new IndexOutOfRangeException($"Cannot find sheet {sheet}");
             }
