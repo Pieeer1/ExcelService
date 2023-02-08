@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelService", "ExcelService\ExcelService.csproj", "{AA709397-7ED6-47CC-9ED8-2FAA6A6C1250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelService", "ExcelService\ExcelService.csproj", "{AA709397-7ED6-47CC-9ED8-2FAA6A6C1250}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4061B85E-F737-48DC-B336-F3E96783861D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelService.Tests", "Tests\ExcelService.Tests\ExcelService.Tests.csproj", "{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,16 @@ Global
 		{AA709397-7ED6-47CC-9ED8-2FAA6A6C1250}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA709397-7ED6-47CC-9ED8-2FAA6A6C1250}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA709397-7ED6-47CC-9ED8-2FAA6A6C1250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA} = {4061B85E-F737-48DC-B336-F3E96783861D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0963970E-61B7-478A-B8C3-3A7E7794570A}
