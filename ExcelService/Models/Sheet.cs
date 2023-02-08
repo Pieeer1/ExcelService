@@ -36,5 +36,41 @@ namespace ExcelService.Models
 
             return new Sheet(new Row(cells, styles?.ElementAt(0)), rows, sheetName);
         }
+        public Cell this[uint x, uint y]
+        {
+            get => GetCell(x, y);
+            set => SetCell(x, y, value);
+        }
+        public Cell this[char x, uint y]
+        {
+            get => GetCell(x, y);
+            set => SetCell(x, y, value);
+        }
+
+        public Cell GetCell(uint x, uint y)
+        {
+            return Rows.ElementAt((int)x).Cells.ElementAt((int)y);
+        }
+        public Cell GetCell(char x, uint y)
+        {
+            if ((int)x < 65 || (int)x > 90)
+            {
+                throw new InvalidOperationException("First Argument must be argument of type A-Z");
+            }
+            return Rows.ElementAt((int)y).Cells.ElementAt((int)(x - 65));
+        }
+
+        public void SetCell(uint x, uint y, Cell value)
+        {
+            Rows.ElementAt((int)x).Cells.ElementAt((int)y).SetCell(value);
+        }
+        public void SetCell(char x, uint y, Cell value)
+        {
+            if ((int)x < 65 || (int)x > 90)
+            {
+                throw new InvalidOperationException("First Argument must be argument of type A-Z");
+            }
+            Rows.ElementAt((int)y).Cells.ElementAt((int)(x - 65)).SetCell(value);
+        }
     }
 }

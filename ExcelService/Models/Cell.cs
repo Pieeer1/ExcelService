@@ -26,6 +26,13 @@ namespace ExcelService.Models
         public Color? Color { get; private set; }
         public double? FontSize { get; private set; }
 
+        public void SetCell(Cell cell)
+        { 
+            Data = cell.Data;
+            Font = cell.Font;
+            Color = cell.Color;
+            FontSize= cell.FontSize;
+        }
         public void SetStyle(Style style)
         {
             Font = style.Font;

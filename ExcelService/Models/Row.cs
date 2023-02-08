@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using System.Reflection;
+
 namespace ExcelService.Models
 {
     public class Row
@@ -18,7 +18,7 @@ namespace ExcelService.Models
 
             for (int i = 0; i < typeof(T).GetProperties().Where(p => p.CanRead).Count(); i++)
             {
-                cells.Add(new Cell(typeof(T).GetProperties().Where(p => p.CanRead).ElementAt(i).GetValue(obj, null)?.ToString() ?? string.Empty, styles.ElementAt(i)));
+                cells.Add(new Cell(typeof(T).GetProperties().Where(p => p.CanRead).ElementAt(i).GetValue(obj, null)?.ToString() ?? string.Empty, styles?.ElementAt(i) ?? new Style()));
             }
 
             return new Row(cells);
