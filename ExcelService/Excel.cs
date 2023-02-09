@@ -5,7 +5,7 @@ namespace ExcelService
 {
     public class Excel : IExcel
     {
-        public readonly HashSet<Workbook> Workbooks;
+        private readonly HashSet<Workbook> Workbooks;
         public Excel() 
         {
             Workbooks = new HashSet<Workbook>();   
@@ -15,6 +15,10 @@ namespace ExcelService
         public void GenerateNewWorkBook(Workbook workbook) => Workbooks.Add(workbook);
         public void GenerateNewWorkBook<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? sheetName = null) => Workbooks.Add(Workbook.GetWorkbookFromDataSet(objects, styles, sheetName));
 
+        public Workbook this[uint index]
+        {
+            get => GetWorkbook(index);
+        }
         public Workbook? this[Workbook workbook]
         {
             get => GetWorkbook(workbook);
@@ -22,6 +26,10 @@ namespace ExcelService
         public Workbook? this[string workbookName]
         {
             get => GetWorkbook(workbookName);
+        }
+        public Workbook GetWorkbook(uint index)
+        {
+            return Workbooks.ElementAt((int)index);
         }
         public Workbook? GetWorkbook(Workbook workbook)
         {
@@ -43,7 +51,11 @@ namespace ExcelService
 
             throw new NotImplementedException();
         }
-
+        public void CombineWorkbooks(Workbook baseWorkbook, Workbook additonalWorkbook)
+        { 
+            baseWorkbook.AddWorkbookSheetsToWorkBook(additonalWorkbook);
+            RemoveWorkbook(additonalWorkbook);
+        }
 
         public void RemoveWorkbook(Workbook workbook)
         {
@@ -52,6 +64,10 @@ namespace ExcelService
         public void RemoveWorkbook(string workbookName)
         {
             RemoveWorkbook(Workbooks.First(x => x.Name == workbookName));
+        }
+        public int WorkbookCount()
+        {
+            return Workbooks.Count;
         }
     }
 }

@@ -7,10 +7,10 @@ namespace ExcelService.Models
 {
     public class Workbook
     {
-        private Workbook(IEnumerable<Sheet> sheets, string name = "Workbook")
+        private Workbook(IEnumerable<Sheet> sheets, string? name)
         {
             Sheets = sheets;
-            Name = name;
+            Name = name ?? "Workbook";
         }
         public IEnumerable<Sheet> Sheets { get; set; }
         public string Name { get; set; }
@@ -23,10 +23,10 @@ namespace ExcelService.Models
         /// <param name="styles">Styles to add: optional, must be at least as long as the actual excel sheets if you want to declare it at startup</param>
         /// <param name="sheetName">optional name of sheet</param>
         /// <returns>Returns a new Workbook object</returns>
-        public static Workbook GetWorkbookFromDataSet<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? sheetName = null) 
+        public static Workbook GetWorkbookFromDataSet<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? workbookName = null, string? sheetName = null) 
         {
             if (!typeof(T).IsClass) { throw new TargetException("Must be a Reference Type to Create an Excel Sheet From a Dynamic Type"); }//currently only supports objects will change to take structs later
-            return new Workbook(new List<Sheet>() { Sheet.GetSheetFromDataSet(objects, styles, sheetName ?? "Sheet") });
+            return new Workbook(new List<Sheet>() { Sheet.GetSheetFromDataSet(objects, styles, sheetName ?? "Sheet") }, workbookName);
         }
         public void AddSheetToWorkBook(Sheet sheet)
         {

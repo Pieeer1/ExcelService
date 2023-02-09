@@ -6,6 +6,10 @@ namespace ExcelService.Interfaces
     {
         public void GenerateNewWorkBook(Workbook workbook);
         public void GenerateNewWorkBook<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? sheetName = null);
+        public Workbook this[uint index]
+        {
+            get => GetWorkbook(index);
+        }
         public Workbook? this[Workbook workbook]
         {
             get => GetWorkbook(workbook);
@@ -16,9 +20,12 @@ namespace ExcelService.Interfaces
         }
         public Workbook? GetWorkbook(Workbook workbook);
         public Workbook? GetWorkbook(string workbookName);
+        public Workbook GetWorkbook(uint index);
         public void GetExcelFromWorkBook(Stream stream, Workbook workbook);
         public void SaveExcelFileFromWorkbook(string fileName, Workbook workbook);
         public void RemoveWorkbook(Workbook workbook);
         public void RemoveWorkbook(string workbookName);
+        public void CombineWorkbooks(Workbook baseWorkbook, Workbook additonalWorkbook);
+        public int WorkbookCount();
     }
 }
