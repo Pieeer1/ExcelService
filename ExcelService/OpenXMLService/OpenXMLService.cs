@@ -88,9 +88,7 @@ namespace ExcelService.OpenXMLService
                             //style magic here
                             if (mapper is not null)
                             {
-
-                                cell.StyleIndex = mapper.StyleMapperDictionary.TryGetValue(excelServiceRow.Cells.ElementAt(i).Style, out uint value) ? value : null; //styles are broken, check below
-
+                                cell.StyleIndex = mapper.StyleMapperDictionary.TryGetValue(excelServiceRow.Cells.ElementAt(i).Style, out uint value) ? value : null;
                             }
 
                             cell.DataType = CellValues.String;
@@ -119,19 +117,19 @@ namespace ExcelService.OpenXMLService
             Fills fills = new Fills() { Count = (UInt32Value)(uint)distinctStyles.Count() };
             Borders borders = new Borders() { Count = (UInt32Value)(uint)distinctStyles.Count() };
             CellStyleFormats cellStyleFormats = new CellStyleFormats() { Count = (UInt32Value)(uint)distinctStyles.Count() };
-            DifferentialFormats differentialFormats = new DifferentialFormats() { Count = (UInt32Value)(uint)distinctStyles.Count() };
-            TableStyles tableStyles = new TableStyles() { Count = (UInt32Value)(uint)distinctStyles.Count(), DefaultTableStyle = "TableStyleMedium2", DefaultPivotStyle = "PivotStyleMedium9" };
             CellFormats cellFormats = new CellFormats() { Count = (UInt32Value)(uint)distinctStyles.Count() };
             CellStyles cellStyles = new CellStyles() { Count = (UInt32Value)(uint)distinctStyles.Count() };
+            DifferentialFormats differentialFormats = new DifferentialFormats() { Count = (UInt32Value)0U };
+            TableStyles tableStyles = new TableStyles() { Count = (UInt32Value)0U, DefaultTableStyle = "TableStyleMedium2", DefaultPivotStyle = "PivotStyleMedium9" };
             uint iterator = 0;
             foreach (Models.Style style in distinctStyles)
             {
                 //might need to change all 1U to iterator
 
                 Font font = new Font();
-                FontSize fontSize = new FontSize() { Val = style.FontSize };
-                DocumentFormat.OpenXml.Office2010.Excel.Color color = new DocumentFormat.OpenXml.Office2010.Excel.Color() { Theme = (UInt32Value)1U };
-                FontName fontName = new FontName() { Val = style.Font.ToString() };
+                FontSize fontSize = new FontSize() { Val = style.FontSize ?? 11D };
+                DocumentFormat.OpenXml.Spreadsheet.Color color = new DocumentFormat.OpenXml.Spreadsheet.Color() { Theme = (UInt32Value)1U };
+                FontName fontName = new FontName() { Val = style.Font.ToString() ?? "Calibri" };
                 FontFamilyNumbering fontFamilyNumbering = new FontFamilyNumbering() { Val = 2 };
                 FontScheme fontScheme = new FontScheme() { Val = FontSchemeValues.Minor };
 
@@ -177,9 +175,11 @@ namespace ExcelService.OpenXMLService
                 borders.Append(border);
 
                 //might need to be the iterator here
-                CellFormat cellFormat = new CellFormat() { NumberFormatId = (UInt32Value)iterator, FontId = (UInt32Value)iterator, FillId = (UInt32Value)iterator, BorderId = (UInt32Value)iterator };
+                CellFormat cellStyleFormat = new CellFormat() { NumberFormatId = (UInt32Value)iterator, FontId = (UInt32Value)iterator, FillId = (UInt32Value)iterator, BorderId = (UInt32Value)iterator, FormatId = (UInt32Value)iterator, ApplyFill = true };
+                CellFormat cellFormat = new CellFormat() { NumberFormatId = (UInt32Value)iterator, FontId = (UInt32Value)iterator, FillId = (UInt32Value)iterator, BorderId = (UInt32Value)iterator, FormatId = (UInt32Value)iterator, ApplyFill = true };
 
-                cellStyleFormats.Append(cellFormat);
+                cellStyleFormats.Append(cellStyleFormat);
+                cellFormats.Append(cellFormat);
 
                 CellStyle cellStyle = new CellStyle() { Name = "Normal", FormatId = (UInt32Value)iterator, BuiltinId = (UInt32Value)iterator };
 
@@ -219,10 +219,9 @@ namespace ExcelService.OpenXMLService
             public Stylesheet StyleSheet { get; set; } = null!;
             public Dictionary<Models.Style, uint> StyleMapperDictionary { get; private set; }
         }
-        private static String HexConverter(System.Drawing.Color c)
+        private static string HexConverter(System.Drawing.Color c)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("#");
             sb.Append(c.R.ToString("X2"));
             sb.Append(c.G.ToString("X2"));
             sb.Append(c.B.ToString("X2"));
