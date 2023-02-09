@@ -163,17 +163,20 @@ namespace ExcelService.Tests
 
             IEnumerable<Style?> noStyles = noStyleWorkbook.GetDistinctStyles();
 
-            Assert.Empty(noStyles);
+            Assert.Single(noStyles);
 
             Assert.NotEmpty(styles);
-            Assert.Equal(Color.Green, styles.Select(x => x?.Color).ElementAt(0));
-            Assert.Equal(Color.Red, styles.Select(x => x?.Color).ElementAt(1));
+            Assert.Equal(Color.Gray, styles.Select(x => x?.Color).ElementAt(0));
+            Assert.Equal(Color.Green, styles.Select(x => x?.Color).ElementAt(1));
+            Assert.Equal(Color.Red, styles.Select(x => x?.Color).ElementAt(2));
 
-            Assert.Equal(Font.Calibri, styles.Select(x => x?.Font).ElementAt(0));
-            Assert.Equal(Font.Arial, styles.Select(x => x?.Font).ElementAt(1));
+            Assert.Equal(Font.Arial, styles.Select(x => x?.Font).ElementAt(0));
+            Assert.Equal(Font.Calibri, styles.Select(x => x?.Font).ElementAt(1));
+            Assert.Equal(Font.Arial, styles.Select(x => x?.Font).ElementAt(2));
 
-            Assert.Equal(12, styles.Select(x => x?.FontSize).ElementAt(0));
-            Assert.Equal(8, styles.Select(x => x?.FontSize).ElementAt(1));
+            Assert.Equal(409, styles.Select(x => x?.FontSize).ElementAt(0));
+            Assert.Equal(12, styles.Select(x => x?.FontSize).ElementAt(1));
+            Assert.Equal(8, styles.Select(x => x?.FontSize).ElementAt(2));
         }
         private class TestObject
         {
