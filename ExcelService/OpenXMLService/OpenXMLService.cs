@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Drawing;
+using System.Text;
 
 namespace ExcelService.OpenXMLService
 {
@@ -146,7 +147,7 @@ namespace ExcelService.OpenXMLService
                 if (style.Color is not null)
                 {
                     PatternFill patternFill = new PatternFill() { PatternType = PatternValues.Solid };
-                    ForegroundColor foregroundColor = new ForegroundColor() { Rgb = ColorTranslator.ToHtml(style.Color ?? throw new NullReferenceException("Invalid Color")) };
+                    ForegroundColor foregroundColor = new ForegroundColor() { Rgb = HexConverter(style.Color ?? throw new NullReferenceException("Invalid Color")) };
                     BackgroundColor backgroundColor = new BackgroundColor() { Indexed = (UInt32Value)64U };
                     patternFill.Append(foregroundColor);
                     patternFill.Append(backgroundColor);
@@ -184,7 +185,7 @@ namespace ExcelService.OpenXMLService
 
                 cellStyles.Append(cellStyle);
 
-                mapper.StyleMapperDictionary.Add(style, iterator);
+                mapper.StyleMapperDictionary.Add(style, iterator++);
             }
 
             StylesheetExtensionList stylesheetExtensionList = new StylesheetExtensionList();
@@ -218,5 +219,15 @@ namespace ExcelService.OpenXMLService
             public Stylesheet StyleSheet { get; set; } = null!;
             public Dictionary<Models.Style, uint> StyleMapperDictionary { get; private set; }
         }
+        private static String HexConverter(System.Drawing.Color c)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("#");
+            sb.Append(c.R.ToString("X2"));
+            sb.Append(c.G.ToString("X2"));
+            sb.Append(c.B.ToString("X2"));
+            return sb.ToString();
+        }
+
     }
 }
