@@ -140,7 +140,11 @@ namespace ExcelService.Models
         }
         public IEnumerable<Style> GetDistinctStyles()
         {
-            HashSet<Style> styles = new HashSet<Style>();
+            HashSet<Style> styles = new HashSet<Style>
+            {
+                Style.Empty(), // default
+                new Style(Font.Arial ,Color.Gray, 409) // need to add a second default to the registry to load in
+            };
             foreach (Sheet sheets in Sheets)
             {
                 styles.UnionWith(sheets.HeaderRow.Cells.Select(x => x.Style).Distinct()); //add header columns
@@ -149,6 +153,7 @@ namespace ExcelService.Models
                     styles.UnionWith(row.Cells.Select(x => x.Style).Distinct());
                 }
             }
+
             return styles.Where(x => x != null && !(x.Color == null && x.Font == null && x.FontSize == null));
         }
     }
