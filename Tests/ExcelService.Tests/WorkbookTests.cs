@@ -161,6 +161,10 @@ namespace ExcelService.Tests
         {
             IEnumerable<Style?> styles = styleWorkbook.GetDistinctStyles();
 
+            IEnumerable<Style?> noStyles = noStyleWorkbook.GetDistinctStyles();
+
+            Assert.Empty(noStyles);
+
             Assert.NotEmpty(styles);
             Assert.Equal(Color.Green, styles.Select(x => x?.Color).ElementAt(0));
             Assert.Equal(Color.Red, styles.Select(x => x?.Color).ElementAt(1));

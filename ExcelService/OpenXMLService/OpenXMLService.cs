@@ -27,6 +27,18 @@ namespace ExcelService.OpenXMLService
                 workbook.WorkbookPart!.Workbook = new Workbook();
                 workbook.WorkbookPart.Workbook.Sheets = new Sheets();
 
+                StyleSheetMapperObject? mapper = null;
+                if (excelServiceWorkbook.GetDistinctStyles().Any())
+                {
+                    mapper = CreateStyleSheet(excelServiceWorkbook.GetDistinctStyles()); // use dictionary from here
+
+                    //idk why this works but it does not work without it so
+                    WorkbookStylesPart workBookStylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
+                    workBookStylesPart.Stylesheet = mapper.StyleSheet;
+                    workBookStylesPart.Stylesheet.Save();
+
+                }
+
                 uint sheetId = 1;
                 foreach (Models.Sheet excelServiceSheet in excelServiceWorkbook.Sheets)
                 {
@@ -71,6 +83,13 @@ namespace ExcelService.OpenXMLService
                         for (int i = 0; i < excelServiceRow.Cells.Count(); i++)
                         {
                             Cell cell = new Cell();
+
+                            //style magic here
+                            if (mapper is not null)
+                            {
+                                cell.StyleIndex = (UInt32Value)mapper.StyleMapperDictionary[excelServiceRow.Cells.ElementAt(i).Style];
+                            }
+
                             cell.DataType = CellValues.String;
                             cell.CellValue = new CellValue(excelServiceRow.Cells.ElementAt(i).Data);
                             newRow.AppendChild(cell);
@@ -83,21 +102,25 @@ namespace ExcelService.OpenXMLService
             stream.Position = 0;
             return stream;
         }
-        private static Stylesheet CreateStyleSheet(HashSet<Models.Style> distinctStyles)
+        private static StyleSheetMapperObject CreateStyleSheet(IEnumerable<Models.Style> distinctStyles)
         {
-            //do not remove namespaces, breaks sheet
-            Stylesheet stylesheet1 = new Stylesheet() { MCAttributes = new MarkupCompatibilityAttributes() { Ignorable = "x14ac" } };
-            stylesheet1.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
-            stylesheet1.AddNamespaceDeclaration("x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
+            StyleSheetMapperObject mapper = new StyleSheetMapperObject();
 
-            Fonts fonts = new Fonts() { Count = (UInt32Value)(uint)distinctStyles.Count, KnownFonts = true };
-            Fills fills = new Fills() { Count = (UInt32Value)(uint)distinctStyles.Count };
-            Borders borders = new Borders() { Count = (UInt32Value)(uint)distinctStyles.Count };
-            CellStyleFormats cellStyleFormats = new CellStyleFormats() { Count = (UInt32Value)(uint)distinctStyles.Count };
-            DifferentialFormats differentialFormats = new DifferentialFormats() { Count = (UInt32Value)(uint)distinctStyles.Count };
-            TableStyles tableStyles = new TableStyles() { Count = (UInt32Value)(uint)distinctStyles.Count, DefaultTableStyle = "TableStyleMedium2", DefaultPivotStyle = "PivotStyleMedium9" };
-            CellFormats cellFormats = new CellFormats() { Count = (UInt32Value)(uint)distinctStyles.Count };
-            CellStyles cellStyles = new CellStyles() { Count = (UInt32Value)(uint)distinctStyles.Count };
+
+            //do not remove namespaces, breaks sheet
+            Stylesheet stylesheet = new Stylesheet() { MCAttributes = new MarkupCompatibilityAttributes() { Ignorable = "x14ac" } };
+            stylesheet.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+            stylesheet.AddNamespaceDeclaration("x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
+
+            Fonts fonts = new Fonts() { Count = (UInt32Value)(uint)distinctStyles.Count(), KnownFonts = true };
+            Fills fills = new Fills() { Count = (UInt32Value)(uint)distinctStyles.Count() };
+            Borders borders = new Borders() { Count = (UInt32Value)(uint)distinctStyles.Count() };
+            CellStyleFormats cellStyleFormats = new CellStyleFormats() { Count = (UInt32Value)(uint)distinctStyles.Count() };
+            DifferentialFormats differentialFormats = new DifferentialFormats() { Count = (UInt32Value)(uint)distinctStyles.Count() };
+            TableStyles tableStyles = new TableStyles() { Count = (UInt32Value)(uint)distinctStyles.Count(), DefaultTableStyle = "TableStyleMedium2", DefaultPivotStyle = "PivotStyleMedium9" };
+            CellFormats cellFormats = new CellFormats() { Count = (UInt32Value)(uint)distinctStyles.Count() };
+            CellStyles cellStyles = new CellStyles() { Count = (UInt32Value)(uint)distinctStyles.Count() };
+            uint iterator = 0;
             foreach (Models.Style style in distinctStyles)
             {
                 //might need to change all 1U to iterator
@@ -151,13 +174,15 @@ namespace ExcelService.OpenXMLService
                 borders.Append(border);
 
                 //might need to be the iterator here
-                CellFormat cellFormat = new CellFormat() { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)0U, BorderId = (UInt32Value)0U };
+                CellFormat cellFormat = new CellFormat() { NumberFormatId = (UInt32Value)iterator, FontId = (UInt32Value)iterator, FillId = (UInt32Value)iterator, BorderId = (UInt32Value)iterator };
 
                 cellStyleFormats.Append(cellFormat);
 
-                CellStyle cellStyle = new CellStyle() { Name = "Normal", FormatId = (UInt32Value)0U, BuiltinId = (UInt32Value)0U };
+                CellStyle cellStyle = new CellStyle() { Name = "Normal", FormatId = (UInt32Value)iterator, BuiltinId = (UInt32Value)iterator };
 
                 cellStyles.Append(cellStyle);
+
+                mapper.StyleMapperDictionary.Add(style, iterator);
             }
 
             StylesheetExtensionList stylesheetExtensionList = new StylesheetExtensionList();
@@ -165,16 +190,31 @@ namespace ExcelService.OpenXMLService
             StylesheetExtension stylesheetExtension = new StylesheetExtension() { Uri = "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}" }; // we love random guids
             stylesheetExtensionList.Append(stylesheetExtension);
 
-            stylesheet1.Append(fonts);
-            stylesheet1.Append(fills);
-            stylesheet1.Append(borders);
-            stylesheet1.Append(cellStyleFormats);
-            stylesheet1.Append(cellFormats);
-            stylesheet1.Append(cellStyles);
-            stylesheet1.Append(differentialFormats);
-            stylesheet1.Append(tableStyles);
-            stylesheet1.Append(stylesheetExtensionList);
-            return stylesheet1;
+            stylesheet.Append(fonts);
+            stylesheet.Append(fills);
+            stylesheet.Append(borders);
+            stylesheet.Append(cellStyleFormats);
+            stylesheet.Append(cellFormats);
+            stylesheet.Append(cellStyles);
+            stylesheet.Append(differentialFormats);
+            stylesheet.Append(tableStyles);
+            stylesheet.Append(stylesheetExtensionList);
+
+            mapper.StyleSheet = stylesheet;
+
+            return mapper;
+        }
+
+
+        private class StyleSheetMapperObject
+        {
+            public StyleSheetMapperObject()
+            {
+                StyleMapperDictionary = new Dictionary<Models.Style, uint>();
+            }
+
+            public Stylesheet StyleSheet { get; set; } = null!;
+            public Dictionary<Models.Style, uint> StyleMapperDictionary { get; private set; }
         }
     }
 }

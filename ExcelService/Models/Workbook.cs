@@ -130,45 +130,6 @@ namespace ExcelService.Models
 
             Sheets.ElementAt((int)sheet)[x, y] = value; 
         }
-        private IEnumerable<Color?> GetDistinctColors()
-        {
-            HashSet<Color?> colors = new HashSet<Color?>();
-            foreach (Sheet sheets in Sheets)
-            {
-                colors.UnionWith(sheets.HeaderRow.Cells.Select(x => x.Style.Color).Distinct()); //add header columns
-                foreach (Row row in sheets.Rows)
-                {
-                    colors.UnionWith(row.Cells.Select(x => x.Style.Color).Distinct());
-                }
-            }
-            return colors.Where(x => x != null);
-        }
-        private IEnumerable<Font?> GetDistinctFonts()
-        {
-            HashSet<Font?> colors = new HashSet<Font?>();
-            foreach (Sheet sheets in Sheets)
-            {
-                colors.UnionWith(sheets.HeaderRow.Cells.Select(x => x.Style.Font).Distinct()); //add header columns
-                foreach (Row row in sheets.Rows)
-                {
-                    colors.UnionWith(row.Cells.Select(x => x.Style.Font).Distinct());
-                }
-            }
-            return colors.Where(x => x != null);
-        }
-        private IEnumerable<double?> GetDistinctFontSize() 
-        {
-            HashSet<double?> colors = new HashSet<double?>();
-            foreach (Sheet sheets in Sheets)
-            {
-                colors.UnionWith(sheets.HeaderRow.Cells.Select(x => x.Style.FontSize).Distinct()); //add header columns
-                foreach (Row row in sheets.Rows)
-                {
-                    colors.UnionWith(row.Cells.Select(x => x.Style.FontSize).Distinct());
-                }
-            }
-            return colors.Where(x => x != null);
-        }
         public IEnumerable<Style> GetDistinctStyles()
         {
             HashSet<Style> styles = new HashSet<Style>();
