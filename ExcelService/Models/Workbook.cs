@@ -1,6 +1,7 @@
 ﻿using ExcelService.Enums;
 using ExcelService.Extensions;
 using System.Drawing;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace ExcelService.Models
@@ -73,6 +74,13 @@ namespace ExcelService.Models
                         cell.SetStyle(font, color, fontSize);
                     }
                 }
+            }
+        }
+        public void StyleRowWhere<T>(Expression<Func<T, bool>> expression, Style style)
+        {
+            foreach (Sheet sheet in Sheets)
+            {
+                sheet.StyleRowWhere(expression, style);
             }
         }
         public Cell this[uint sheet, uint x, uint y]

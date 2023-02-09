@@ -69,11 +69,17 @@ namespace ExcelService.IntegrationTests
             },
             "TestWorkbook",
             "TestSheet");
+
+            excel["TestWorkbook"]?.StyleRowWhere<TestClass>(x => x.Column1 == "a", new Style(Enums.Font.Arial, Color.Red, 65));
+
+
+            excel["TestWorkbook"]?.StyleRowWhere<TestClass>(x => x.Column1 == "n", new Style(Enums.Font.Arial, Color.Red, 25));
+
             excel.SaveExcelFileFromWorkbook("../../../test.xlsx", excel["TestWorkbook"] ?? throw new NullReferenceException("Invalid Container"));
             
         }
 
-        private class TestClass
+        public class TestClass
         {
             public TestClass(string? column1, string? column2, string? column3, string? column4, string? column5, string? column6, string? column7, int column8, DateTime? column9)
             {

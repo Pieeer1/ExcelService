@@ -88,7 +88,7 @@ namespace ExcelService.OpenXMLService
                             //style magic here
                             if (mapper is not null)
                             {
-                                cell.StyleIndex = mapper.StyleMapperDictionary.TryGetValue(excelServiceRow.Cells.ElementAt(i).Style, out uint value) ? mapper.StyleMapperDictionary.Count > 1 ? value == 1 ? value + 1 : value : value : 0U;
+                                cell.StyleIndex = mapper.StyleMapperDictionary.TryGetValue(excelServiceRow.Cells.ElementAt(i).Style, out uint value) ? value : 0U;
                             }
 
                             cell.DataType = CellValues.String;

@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace ExcelService.Models
 {
@@ -71,6 +74,19 @@ namespace ExcelService.Models
                 throw new InvalidOperationException("First Argument must be argument of type A-Z");
             }
             Rows.ElementAt((int)y).Cells.ElementAt((int)(x - 65)).SetCell(value);
+        }
+        public void StyleRowWhere<T>(Expression<Func<T, bool>> expression, Style style)
+        {
+            foreach (Row row in Rows)
+            {
+                if (expression.Compile().Invoke(row.ObjectReference))
+                {
+                    foreach (Cell cell in row.Cells)
+                    {
+                        cell.SetStyle(style);
+                    }
+                }
+            }
         }
     }
 }
