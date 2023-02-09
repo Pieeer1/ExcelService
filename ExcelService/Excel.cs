@@ -11,7 +11,6 @@ namespace ExcelService
             Workbooks = new HashSet<Workbook>();   
         }
 
-
         public void GenerateNewWorkBook(Workbook workbook) => Workbooks.Add(workbook);
         public void GenerateNewWorkBook<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? sheetName = null) => Workbooks.Add(Workbook.GetWorkbookFromDataSet(objects, styles, sheetName));
 
@@ -39,17 +38,15 @@ namespace ExcelService
         { 
             return Workbooks.FirstOrDefault(x => x.Name == workbookName);
         }
-        public void GetExcelFromWorkBook(Stream stream, Workbook workbook)
+        public Stream GetExcelFromWorkBook(Workbook workbook)
         {
-
-            stream.Position = 0; // keep before eof
-            throw new NotImplementedException();
+            return OpenXMLService.OpenXMLService.GetXLSXStreamFromWorkbook(workbook);
         }
         public void SaveExcelFileFromWorkbook(string fileName, Workbook workbook)
         {
-
-
-            throw new NotImplementedException();
+            MemoryStream ms = new MemoryStream();
+            OpenXMLService.OpenXMLService.GetXLSXStreamFromWorkbook(workbook).CopyTo(ms);
+            File.WriteAllBytes(fileName, ms.ToArray());
         }
         public void CombineWorkbooks(Workbook baseWorkbook, Workbook additonalWorkbook)
         { 

@@ -21,7 +21,7 @@ namespace ExcelService.Interfaces
         public Workbook? GetWorkbook(Workbook workbook);
         public Workbook? GetWorkbook(string workbookName);
         public Workbook GetWorkbook(uint index);
-        public void GetExcelFromWorkBook(Stream stream, Workbook workbook);
+        public Stream GetExcelFromWorkBook(Workbook workbook);
         public void SaveExcelFileFromWorkbook(string fileName, Workbook workbook);
         public void RemoveWorkbook(Workbook workbook);
         public void RemoveWorkbook(string workbookName);
