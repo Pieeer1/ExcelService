@@ -12,7 +12,7 @@ namespace ExcelService
         }
 
         public void GenerateNewWorkBook(Workbook workbook) => Workbooks.Add(workbook);
-        public void GenerateNewWorkBook<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? sheetName = null) => Workbooks.Add(Workbook.GetWorkbookFromDataSet(objects, styles, sheetName));
+        public void GenerateNewWorkBook<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? workbookName = null, string? sheetName = null) => Workbooks.Add(Workbook.GetWorkbookFromDataSet(objects, styles,workbookName, sheetName));
 
         public Workbook this[uint index]
         {

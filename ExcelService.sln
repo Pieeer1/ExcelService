@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelService", "ExcelServic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4061B85E-F737-48DC-B336-F3E96783861D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelService.Tests", "Tests\ExcelService.Tests\ExcelService.Tests.csproj", "{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelService.Tests", "Tests\ExcelService.Tests\ExcelService.Tests.csproj", "{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelService.IntegrationTests", "Tests\ExcelService.IntegrationTests\ExcelService.IntegrationTests.csproj", "{61EBABE3-2159-4A01-9018-74506AB06A09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,12 +25,17 @@ Global
 		{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61EBABE3-2159-4A01-9018-74506AB06A09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61EBABE3-2159-4A01-9018-74506AB06A09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61EBABE3-2159-4A01-9018-74506AB06A09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61EBABE3-2159-4A01-9018-74506AB06A09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F055E750-F4E5-467E-A3A3-D4B6EFF42AAA} = {4061B85E-F737-48DC-B336-F3E96783861D}
+		{61EBABE3-2159-4A01-9018-74506AB06A09} = {4061B85E-F737-48DC-B336-F3E96783861D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0963970E-61B7-478A-B8C3-3A7E7794570A}

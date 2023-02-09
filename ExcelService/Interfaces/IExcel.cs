@@ -5,7 +5,7 @@ namespace ExcelService.Interfaces
     public interface IExcel
     {
         public void GenerateNewWorkBook(Workbook workbook);
-        public void GenerateNewWorkBook<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? sheetName = null);
+        public void GenerateNewWorkBook<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? workbookName = null, string? sheetName = null);
         public Workbook this[uint index]
         {
             get => GetWorkbook(index);
