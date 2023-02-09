@@ -88,7 +88,7 @@ namespace ExcelService.OpenXMLService
                             //style magic here
                             if (mapper is not null)
                             {
-                                cell.StyleIndex = mapper.StyleMapperDictionary.TryGetValue(excelServiceRow.Cells.ElementAt(i).Style, out uint value) ? value : null;
+                                cell.StyleIndex = mapper.StyleMapperDictionary.TryGetValue(excelServiceRow.Cells.ElementAt(i).Style, out uint value) ? value : 0U;
                             }
 
                             cell.DataType = CellValues.String;
@@ -113,15 +113,17 @@ namespace ExcelService.OpenXMLService
             stylesheet.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
             stylesheet.AddNamespaceDeclaration("x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
 
-            Fonts fonts = new Fonts() { Count = (UInt32Value)(uint)distinctStyles.Count(), KnownFonts = true };
-            Fills fills = new Fills() { Count = (UInt32Value)(uint)distinctStyles.Count() };
-            Borders borders = new Borders() { Count = (UInt32Value)(uint)distinctStyles.Count() };
-            CellStyleFormats cellStyleFormats = new CellStyleFormats() { Count = (UInt32Value)(uint)distinctStyles.Count() };
-            CellFormats cellFormats = new CellFormats() { Count = (UInt32Value)(uint)distinctStyles.Count() };
-            CellStyles cellStyles = new CellStyles() { Count = (UInt32Value)(uint)distinctStyles.Count() };
+            Fonts fonts = new Fonts() { Count = (UInt32Value)(uint)distinctStyles.Count() + 1, KnownFonts = true };
+            Fills fills = new Fills() { Count = (UInt32Value)(uint)distinctStyles.Count() + 1 };
+            Borders borders = new Borders() { Count = (UInt32Value)(uint)distinctStyles.Count() + 1 };
+            CellStyleFormats cellStyleFormats = new CellStyleFormats() { Count = (UInt32Value)(uint)distinctStyles.Count() + 1 };
+            CellFormats cellFormats = new CellFormats() { Count = (UInt32Value)(uint)distinctStyles.Count() + 1 };
+            CellStyles cellStyles = new CellStyles() { Count = (UInt32Value)(uint)distinctStyles.Count() + 1 };
             DifferentialFormats differentialFormats = new DifferentialFormats() { Count = (UInt32Value)0U };
             TableStyles tableStyles = new TableStyles() { Count = (UInt32Value)0U, DefaultTableStyle = "TableStyleMedium2", DefaultPivotStyle = "PivotStyleMedium9" };
-            uint iterator = 0;
+            SetDefaults(fonts, fills, borders, cellStyleFormats, cellFormats, cellStyles, mapper);
+            //start of defaults
+            uint iterator = 1;
             foreach (Models.Style style in distinctStyles)
             {
                 //might need to change all 1U to iterator
@@ -174,11 +176,12 @@ namespace ExcelService.OpenXMLService
 
                 borders.Append(border);
 
-                //might need to be the iterator here
                 CellFormat cellStyleFormat = new CellFormat() { NumberFormatId = (UInt32Value)iterator, FontId = (UInt32Value)iterator, FillId = (UInt32Value)iterator, BorderId = (UInt32Value)iterator, FormatId = (UInt32Value)iterator, ApplyFill = true };
-                CellFormat cellFormat = new CellFormat() { NumberFormatId = (UInt32Value)iterator, FontId = (UInt32Value)iterator, FillId = (UInt32Value)iterator, BorderId = (UInt32Value)iterator, FormatId = (UInt32Value)iterator, ApplyFill = true };
 
                 cellStyleFormats.Append(cellStyleFormat);
+
+                CellFormat cellFormat = new CellFormat() { NumberFormatId = (UInt32Value)iterator, FontId = (UInt32Value)iterator, FillId = (UInt32Value)iterator, BorderId = (UInt32Value)iterator, FormatId = (UInt32Value)iterator, ApplyFill = true };
+
                 cellFormats.Append(cellFormat);
 
                 CellStyle cellStyle = new CellStyle() { Name = "Normal", FormatId = (UInt32Value)iterator, BuiltinId = (UInt32Value)iterator };
@@ -207,8 +210,52 @@ namespace ExcelService.OpenXMLService
 
             return mapper;
         }
+        private static void SetDefaults(Fonts fonts, Fills fills, Borders borders, CellStyleFormats cellStyleFormats, CellFormats cellFormats, CellStyles cellStyles, StyleSheetMapperObject mapper)
+        {
+
+            Font font = new Font();
+            FontSize fontSize = new FontSize() { Val = 12D };
+            DocumentFormat.OpenXml.Spreadsheet.Color color = new DocumentFormat.OpenXml.Spreadsheet.Color() { Theme = (UInt32Value)1U };
+            FontName fontName = new FontName() { Val = "Calibri" };
+            FontFamilyNumbering fontFamilyNumbering = new FontFamilyNumbering() { Val = 2 };
+            FontScheme fontScheme = new FontScheme() { Val = FontSchemeValues.Minor };
+
+            font.Append(fontSize);
+            font.Append(color);
+            font.Append(fontName);
+            font.Append(fontFamilyNumbering);
+            font.Append(fontScheme);
+            fonts.Append(font);
 
 
+            Fill fill = new Fill();
+
+            PatternFill patternFill = new PatternFill() { PatternType = PatternValues.None };
+            fill.Append(patternFill);
+            
+            fills.Append(fill);
+
+            Border border = new Border();
+            LeftBorder leftBorder = new LeftBorder();
+            RightBorder rightBorder = new RightBorder();
+            TopBorder topBorder = new TopBorder();
+            BottomBorder bottomBorder = new BottomBorder();
+            DiagonalBorder diagonalBorder = new DiagonalBorder();
+
+            border.Append(leftBorder);
+            border.Append(rightBorder);
+            border.Append(topBorder);
+            border.Append(bottomBorder);
+            border.Append(diagonalBorder);
+            borders.Append(border);
+            CellFormat cellStyleFormat = new CellFormat() { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)0U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U, ApplyFill = true };
+            cellStyleFormats.Append(cellStyleFormat);
+            CellFormat cellFormat = new CellFormat() { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)0U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U, ApplyFill = true };
+            cellFormats.Append(cellFormat);
+            CellStyle cellStyle = new CellStyle() { Name = "Normal", FormatId = (UInt32Value)0U, BuiltinId = (UInt32Value)0U };
+            cellStyles.Append(cellStyle);
+            mapper.StyleMapperDictionary.Add(Models.Style.Empty(), 0);
+        }
         private class StyleSheetMapperObject
         {
             public StyleSheetMapperObject()

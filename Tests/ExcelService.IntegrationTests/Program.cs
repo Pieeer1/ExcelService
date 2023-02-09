@@ -32,7 +32,7 @@ namespace ExcelService.IntegrationTests
                 },
                 new List<Style>()
                 {
-                    new Style(Enums.Font.Calibri, Color.Red, 12),
+                    new Style(Enums.Font.Calibri, Color.Red, 8),
                     Style.Empty(),
                     Style.Empty(),
                     Style.Empty(),
@@ -49,7 +49,7 @@ namespace ExcelService.IntegrationTests
                     Style.Empty(),
                     Style.Empty(),
                     Style.Empty(),
-                    Style.Empty(),
+                    new Style(Enums.Font.Arial, Color.Green, 20),
                     Style.Empty(),
                     Style.Empty(),
                     Style.Empty(),
