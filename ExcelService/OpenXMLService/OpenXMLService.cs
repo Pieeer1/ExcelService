@@ -1,7 +1,7 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-
+using System.Drawing;
 
 namespace ExcelService.OpenXMLService
 {
@@ -83,6 +83,98 @@ namespace ExcelService.OpenXMLService
             stream.Position = 0;
             return stream;
         }
+        private static Stylesheet CreateStyleSheet(HashSet<Models.Style> distinctStyles)
+        {
+            //do not remove namespaces, breaks sheet
+            Stylesheet stylesheet1 = new Stylesheet() { MCAttributes = new MarkupCompatibilityAttributes() { Ignorable = "x14ac" } };
+            stylesheet1.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+            stylesheet1.AddNamespaceDeclaration("x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
 
+            Fonts fonts = new Fonts() { Count = (UInt32Value)(uint)distinctStyles.Count, KnownFonts = true };
+            Fills fills = new Fills() { Count = (UInt32Value)(uint)distinctStyles.Count };
+            Borders borders = new Borders() { Count = (UInt32Value)(uint)distinctStyles.Count };
+            CellStyleFormats cellStyleFormats = new CellStyleFormats() { Count = (UInt32Value)(uint)distinctStyles.Count };
+            DifferentialFormats differentialFormats = new DifferentialFormats() { Count = (UInt32Value)(uint)distinctStyles.Count };
+            TableStyles tableStyles = new TableStyles() { Count = (UInt32Value)(uint)distinctStyles.Count, DefaultTableStyle = "TableStyleMedium2", DefaultPivotStyle = "PivotStyleMedium9" };
+            CellFormats cellFormats = new CellFormats() { Count = (UInt32Value)(uint)distinctStyles.Count };
+            CellStyles cellStyles = new CellStyles() { Count = (UInt32Value)(uint)distinctStyles.Count };
+            foreach (Models.Style style in distinctStyles)
+            {
+                //might need to change all 1U to iterator
+
+                Font font = new Font();
+                FontSize fontSize = new FontSize() { Val = style.FontSize };
+                DocumentFormat.OpenXml.Office2010.Excel.Color color = new DocumentFormat.OpenXml.Office2010.Excel.Color() { Theme = (UInt32Value)1U };
+                FontName fontName = new FontName() { Val = style.Font.ToString() };
+                FontFamilyNumbering fontFamilyNumbering = new FontFamilyNumbering() { Val = 2 };
+                FontScheme fontScheme = new FontScheme() { Val = FontSchemeValues.Minor };
+
+                font.Append(fontSize);
+                font.Append(color);
+                font.Append(fontName);
+                font.Append(fontFamilyNumbering);
+                font.Append(fontScheme);
+                fonts.Append(font);
+
+
+                Fill fill = new Fill();
+                if (style.Color is not null)
+                {
+                    PatternFill patternFill = new PatternFill() { PatternType = PatternValues.Solid };
+                    ForegroundColor foregroundColor = new ForegroundColor() { Rgb = ColorTranslator.ToHtml(style.Color ?? throw new NullReferenceException("Invalid Color")) };
+                    BackgroundColor backgroundColor = new BackgroundColor() { Indexed = (UInt32Value)64U };
+                    patternFill.Append(foregroundColor);
+                    patternFill.Append(backgroundColor);
+                    fill.Append(patternFill);
+                }
+                else
+                {
+                    PatternFill patternFill = new PatternFill() { PatternType = PatternValues.None };
+                    fill.Append(patternFill);
+                }
+
+                fills.Append(fill);
+
+                Border border = new Border();
+                LeftBorder leftBorder = new LeftBorder();
+                RightBorder rightBorder = new RightBorder();
+                TopBorder topBorder = new TopBorder();
+                BottomBorder bottomBorder = new BottomBorder();
+                DiagonalBorder diagonalBorder = new DiagonalBorder();
+
+                border.Append(leftBorder);
+                border.Append(rightBorder);
+                border.Append(topBorder);
+                border.Append(bottomBorder);
+                border.Append(diagonalBorder);
+
+                borders.Append(border);
+
+                //might need to be the iterator here
+                CellFormat cellFormat = new CellFormat() { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)0U, BorderId = (UInt32Value)0U };
+
+                cellStyleFormats.Append(cellFormat);
+
+                CellStyle cellStyle = new CellStyle() { Name = "Normal", FormatId = (UInt32Value)0U, BuiltinId = (UInt32Value)0U };
+
+                cellStyles.Append(cellStyle);
+            }
+
+            StylesheetExtensionList stylesheetExtensionList = new StylesheetExtensionList();
+
+            StylesheetExtension stylesheetExtension = new StylesheetExtension() { Uri = "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}" }; // we love random guids
+            stylesheetExtensionList.Append(stylesheetExtension);
+
+            stylesheet1.Append(fonts);
+            stylesheet1.Append(fills);
+            stylesheet1.Append(borders);
+            stylesheet1.Append(cellStyleFormats);
+            stylesheet1.Append(cellFormats);
+            stylesheet1.Append(cellStyles);
+            stylesheet1.Append(differentialFormats);
+            stylesheet1.Append(tableStyles);
+            stylesheet1.Append(stylesheetExtensionList);
+            return stylesheet1;
+        }
     }
 }
