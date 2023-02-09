@@ -44,36 +44,11 @@ namespace ExcelService.Models
             }
             Sheets = newSheetList;
         }
-        public void StyleWhere(string header, Func<string, bool> operation, Style style)
+        public void StyleCellWhere<T>(Expression<Func<T, bool>> expression, Style style)
         {
             foreach (Sheet sheet in Sheets)
             {
-                int headerPosition = sheet.HeaderRow.Cells.IndexOf(sheet.HeaderRow.Cells.FirstOrDefault(x => x.Data == header));
-                if (headerPosition == -1) { continue; }
-                foreach (Row row in sheet.Rows)
-                {
-                    Cell cell = row.Cells.ElementAt(headerPosition);
-                    if (operation.Invoke(cell.Data))
-                    {
-                        cell.SetStyle(style);
-                    }
-                }
-            }
-        }
-        public void StyleWhere(string header, Func<string, bool> operation, Font? font, Color? color, double? fontSize)
-        {
-            foreach (Sheet sheet in Sheets)
-            {
-                int headerPosition = sheet.HeaderRow.Cells.IndexOf(sheet.HeaderRow.Cells.FirstOrDefault(x => x.Data == header));
-                if (headerPosition == -1) { continue; }
-                foreach (Row row in sheet.Rows)
-                {
-                    Cell cell = row.Cells.ElementAt(headerPosition);
-                    if (operation.Invoke(cell.Data))
-                    {
-                        cell.SetStyle(font, color, fontSize);
-                    }
-                }
+                sheet.StyleCellWhere(expression, style);
             }
         }
         public void StyleRowWhere<T>(Expression<Func<T, bool>> expression, Style style)

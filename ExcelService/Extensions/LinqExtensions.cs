@@ -1,4 +1,6 @@
-﻿namespace ExcelService.Extensions
+﻿using System.Text.RegularExpressions;
+
+namespace ExcelService.Extensions
 {
     public static class LinqExtensions
     {
@@ -14,5 +16,41 @@
             return -1;
         }
         public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> o) => o.Where(x => x != null)!;
+
+        public static string GetExpressionMethodName(this string expressionString)
+        {
+            Regex re = GetRegexFromExpression(expressionString);
+            return re.Match(expressionString).Groups[1].Value;
+        }
+
+        private static Regex GetRegexFromExpression(string parsedExpression)
+        {
+            if (parsedExpression.Contains("=="))
+            {
+                return new Regex(@"\.(.*)\s==");
+            }
+            if (parsedExpression.Contains("!="))
+            {
+                return new Regex(@"\.(.*)\s!=");
+            }
+            if (parsedExpression.Contains(">="))
+            {
+                return new Regex(@"\.(.*)\s>=");
+            }
+            if (parsedExpression.Contains("<="))
+            {
+                return new Regex(@"\.(.*)\s<=");
+            }
+            if (parsedExpression.Contains(">"))
+            {
+                return new Regex(@"\.(.*)\s>");
+            }
+            if (parsedExpression.Contains("<"))
+            {
+                return new Regex(@"\.(.*)\s<");
+            }
+            return new Regex(@"\(.*\.(.*)\)\)");
+        }
+
     }
 }

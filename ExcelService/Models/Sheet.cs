@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
+using ExcelService.Extensions;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -84,6 +85,22 @@ namespace ExcelService.Models
                     foreach (Cell cell in row.Cells)
                     {
                         cell.SetStyle(style);
+                    }
+                }
+            }
+        }
+        public void StyleCellWhere<T>(Expression<Func<T, bool>> expression, Style style)
+        {
+            foreach (Row row in Rows)
+            {
+                if (expression.Compile().Invoke(row.ObjectReference))
+                {
+                    foreach (Cell cell in row.Cells)
+                    {
+                        if (typeof(T).GetProperty(expression.Body.ToString().GetExpressionMethodName())?.GetValue(row.ObjectReference) == cell.Data)
+                        { 
+                            cell.SetStyle(style);
+                        }
                     }
                 }
             }
