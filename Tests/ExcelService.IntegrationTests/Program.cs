@@ -1,4 +1,6 @@
 ﻿using ExcelService;
+using ExcelService.Models;
+using System.Drawing;
 
 namespace ExcelService.IntegrationTests
 {
@@ -14,7 +16,57 @@ namespace ExcelService.IntegrationTests
                 new TestClass("h", "i", "j", "k", "l", "m", "m", 2, new DateTime(1998, 11, 07)),
                 new TestClass("n", "l", "o", "p", "q", "r", "s", 2, new DateTime(1998, 11, 07)),
             },
-            null,
+            new List<List<Style>>()
+            { 
+                new List<Style>()
+                { 
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                },
+                new List<Style>()
+                {
+                    new Style(Enums.Font.Calibri, Color.Red, 12),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                },
+                new List<Style>()
+                {
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                },
+                new List<Style>()
+                {
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                    Style.Empty(),
+                },
+            },
             "TestWorkbook",
             "TestSheet");
             excel.SaveExcelFileFromWorkbook("../../../test.xlsx", excel["TestWorkbook"] ?? throw new NullReferenceException("Invalid Container"));
