@@ -6,14 +6,13 @@ namespace ExcelService
     public class Excel : IExcel
     {
         public readonly HashSet<Workbook> Workbooks;
-        private Excel() 
+        public Excel() 
         {
             Workbooks = new HashSet<Workbook>();   
         }
 
 
         public void GenerateNewWorkBook(Workbook workbook) => Workbooks.Add(workbook);
-        public void GenerateNewWorkBook<T>(IEnumerable<IEnumerable<T>> objects, IEnumerable<IEnumerable<IEnumerable<Style>>>? styles = null, string[]? sheetNames = null) => Workbooks.Add(Workbook.GetWorkbookFromDataSet(objects, styles, sheetNames));
         public void GenerateNewWorkBook<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? sheetName = null) => Workbooks.Add(Workbook.GetWorkbookFromDataSet(objects, styles, sheetName));
 
         public Workbook? this[Workbook workbook]

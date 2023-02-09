@@ -1,6 +1,7 @@
 ﻿using ExcelService.Enums;
 using ExcelService.Extensions;
 using System.Drawing;
+using System.Reflection;
 
 namespace ExcelService.Models
 {
@@ -15,24 +16,6 @@ namespace ExcelService.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// Creating a WorkBook with Multiple Sheets
-        /// </summary>
-        /// <typeparam name="T">Type of Object to Convert</typeparam>
-        /// <param name="objects">2d enumerable to convert into an excel</param>
-        /// <param name="styles">list of styles optional: must be at least as long as the actual excel sheets if you want to declare at startup</param>
-        /// <param name="sheetNames">optional name of sheets</param>
-        /// <returns>Returns a new Workbook object</returns>
-        public static Workbook GetWorkbookFromDataSet<T>(IEnumerable<IEnumerable<T>> objects, IEnumerable<IEnumerable<IEnumerable<Style>>>? styles = null, string[]? sheetNames = null)
-        {
-            List<Sheet> sheets = new List<Sheet>();
-            for (int i = 0; i < objects.Count(); i++)
-            {
-                sheets.Add(Sheet.GetSheetFromDataSet(objects.ElementAt(i), styles?.ElementAt(i), sheetNames?[i] ?? $"Sheet {i + 1}"));
-            }
-
-            return new Workbook(new List<Sheet>(sheets));
-        }
-        /// <summary>
         /// Creating a WorkBook with a single Sheet
         /// </summary>
         /// <typeparam name="T">Type of Object to Convert</typeparam>
@@ -40,9 +23,25 @@ namespace ExcelService.Models
         /// <param name="styles">Styles to add: optional, must be at least as long as the actual excel sheets if you want to declare it at startup</param>
         /// <param name="sheetName">optional name of sheet</param>
         /// <returns>Returns a new Workbook object</returns>
-        public static Workbook GetWorkbookFromDataSet<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? sheetName = null)
+        public static Workbook GetWorkbookFromDataSet<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles = null, string? sheetName = null) 
         {
+            if (!typeof(T).IsClass) { throw new TargetException("Must be a Reference Type to Create an Excel Sheet From a Dynamic Type"); }//currently only supports objects will change to take structs later
             return new Workbook(new List<Sheet>() { Sheet.GetSheetFromDataSet(objects, styles, sheetName ?? "Sheet") });
+        }
+        public void AddSheetToWorkBook(Sheet sheet)
+        {
+            List<Sheet> newSheetList = Sheets.ToList();
+            newSheetList.Add(sheet);
+            Sheets = newSheetList;
+        }
+        public void AddWorkbookSheetsToWorkBook(Workbook workbook)
+        {
+            List<Sheet> newSheetList = Sheets.ToList();
+            foreach (Sheet sheet in workbook.Sheets)
+            {
+                newSheetList.Add(sheet);
+            }
+            Sheets = newSheetList;
         }
         public void StyleWhere(string header, Func<string, bool> operation, Style style)
         {
