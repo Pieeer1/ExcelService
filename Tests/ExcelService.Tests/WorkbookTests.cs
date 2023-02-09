@@ -1,6 +1,6 @@
 using ExcelService.Models;
 using System.Drawing;
-
+using ExcelService.Enums;
 namespace ExcelService.Tests
 {
     public class WorkbookTests
@@ -46,13 +46,13 @@ namespace ExcelService.Tests
                 new Style()
                 {
                     Color = Color.Green,
-                    Font = Enums.Font.Calibri,
+                    Font = Font.Calibri,
                     FontSize= 12,
                 },
                 new Style()
                 {
                     Color = Color.Red,
-                    Font = Enums.Font.Arial,
+                    Font = Font.Arial,
                     FontSize= 8,
                 },
                 Style.Empty(),
@@ -63,13 +63,13 @@ namespace ExcelService.Tests
                 new Style()
                 {
                     Color = Color.Green,
-                    Font = Enums.Font.Calibri,
+                    Font = Font.Calibri,
                     FontSize= 12,
                 },
                 new Style()
                 {
                     Color = Color.Red,
-                    Font = Enums.Font.Arial,
+                    Font = Font.Arial,
                     FontSize= 8,
                 },
                 Style.Empty(),
@@ -80,13 +80,13 @@ namespace ExcelService.Tests
                 new Style()
                 {
                     Color = Color.Green,
-                    Font = Enums.Font.Calibri,
+                    Font = Font.Calibri,
                     FontSize= 12,
                 },
                 new Style()
                 {
                     Color = Color.Red,
-                    Font = Enums.Font.Arial,
+                    Font = Font.Arial,
                     FontSize= 8,
                 },
                 Style.Empty(),
@@ -157,13 +157,19 @@ namespace ExcelService.Tests
             Assert.Throws<InvalidOperationException>(() => noStyleWorkbook[0, '~', 0]);
         }
         [Fact]
-        public void TestGetDistinctColors()
+        public void TestGetDistinctStyles()
         {
-            IEnumerable<Color?> colors = styleWorkbook.GetDistinctColors();
+            IEnumerable<Style?> styles = styleWorkbook.GetDistinctStyles();
 
-            Assert.NotEmpty(colors);
-            Assert.Equal(Color.Green, colors.ElementAt(0));
-            Assert.Equal(Color.Red, colors.ElementAt(1));
+            Assert.NotEmpty(styles);
+            Assert.Equal(Color.Green, styles.Select(x => x?.Color).ElementAt(0));
+            Assert.Equal(Color.Red, styles.Select(x => x?.Color).ElementAt(1));
+
+            Assert.Equal(Font.Calibri, styles.Select(x => x?.Font).ElementAt(0));
+            Assert.Equal(Font.Arial, styles.Select(x => x?.Font).ElementAt(1));
+
+            Assert.Equal(12, styles.Select(x => x?.FontSize).ElementAt(0));
+            Assert.Equal(8, styles.Select(x => x?.FontSize).ElementAt(1));
         }
         private class TestObject
         {

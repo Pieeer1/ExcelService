@@ -9,41 +9,29 @@ namespace ExcelService.Models
         public Cell(string data, Style style) 
         {
             Data = data;
-            Font = style.Font;
-            Color = style.Color;
-            FontSize = style.FontSize;
+            Style = style;
         }
         public Cell(string data, Font? font = null, Color? color = null, double? fontSize = null)
         {
             Data = data;
-            Font = font;
-            Color = color;
-            FontSize = fontSize;
+            Style = new Style(font, color, fontSize);
         }
 
         public string Data { get; private set; }
-        public Font? Font { get; private set; }
-        public Color? Color { get; private set; }
-        public double? FontSize { get; private set; }
+        public Style Style { get; private set; }
 
         public void SetCell(Cell cell)
         { 
             Data = cell.Data;
-            Font = cell.Font;
-            Color = cell.Color;
-            FontSize= cell.FontSize;
+            Style = cell.Style;
         }
         public void SetStyle(Style style)
         {
-            Font = style.Font;
-            Color = style.Color;
-            FontSize = style.FontSize;
+            Style = style;
         }
         public void SetStyle(Font? font = null, Color? color = null, double? fontSize = null)
         {
-            Font = font;
-            Color = color;
-            FontSize = fontSize;
+            Style = new Style(font, color, fontSize);
         }
     }
 }
