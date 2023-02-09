@@ -88,7 +88,7 @@ namespace ExcelService.OpenXMLService
                             //style magic here
                             if (mapper is not null)
                             {
-                                cell.StyleIndex = mapper.StyleMapperDictionary.TryGetValue(excelServiceRow.Cells.ElementAt(i).Style, out uint value) ? value : 0U;
+                                cell.StyleIndex = mapper.StyleMapperDictionary.TryGetValue(excelServiceRow.Cells.ElementAt(i).Style, out uint value) ? mapper.StyleMapperDictionary.Count > 1 ? value == 1 ? value + 1 : value : value : 0U;
                             }
 
                             cell.DataType = CellValues.String;
@@ -130,7 +130,7 @@ namespace ExcelService.OpenXMLService
 
                 Font font = new Font();
                 FontSize fontSize = new FontSize() { Val = style.FontSize ?? 11D };
-                DocumentFormat.OpenXml.Spreadsheet.Color color = new DocumentFormat.OpenXml.Spreadsheet.Color() { Theme = (UInt32Value)1U };
+                DocumentFormat.OpenXml.Spreadsheet.Color color = new DocumentFormat.OpenXml.Spreadsheet.Color() { Theme = (UInt32Value)1U }; // 1U IS BLACK 0U IS WHITE
                 FontName fontName = new FontName() { Val = style.Font.ToString() ?? "Calibri" };
                 FontFamilyNumbering fontFamilyNumbering = new FontFamilyNumbering() { Val = 2 };
                 FontScheme fontScheme = new FontScheme() { Val = FontSchemeValues.Minor };
@@ -212,7 +212,6 @@ namespace ExcelService.OpenXMLService
         }
         private static void SetDefaults(Fonts fonts, Fills fills, Borders borders, CellStyleFormats cellStyleFormats, CellFormats cellFormats, CellStyles cellStyles, StyleSheetMapperObject mapper)
         {
-
             Font font = new Font();
             FontSize fontSize = new FontSize() { Val = 12D };
             DocumentFormat.OpenXml.Spreadsheet.Color color = new DocumentFormat.OpenXml.Spreadsheet.Color() { Theme = (UInt32Value)1U };
