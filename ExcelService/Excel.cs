@@ -62,6 +62,10 @@ namespace ExcelService
         {
             RemoveWorkbook(Workbooks.First(x => x.Name == workbookName));
         }
+        public void ClearWorkbooks()
+        {
+            Workbooks.Clear();
+        }
         public int WorkbookCount()
         {
             return Workbooks.Count;
