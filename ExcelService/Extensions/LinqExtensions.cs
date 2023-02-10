@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq.Expressions;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace ExcelService.Extensions
 {
@@ -17,39 +19,19 @@ namespace ExcelService.Extensions
         }
         public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> o) => o.Where(x => x != null)!;
 
-        public static string GetExpressionMethodName(this string expressionString)
-        {
-            Regex re = GetRegexFromExpression(expressionString);
-            return re.Match(expressionString).Groups[1].Value;
-        }
 
-        private static Regex GetRegexFromExpression(string parsedExpression)
+        public static string? ResolveArgs<T>(this Expression<Func<T, bool>> expression)
         {
-            if (parsedExpression.Contains("=="))
+            var body = expression.Body as BinaryExpression;
+            if (body != null) 
             {
-                return new Regex(@"\.(.*)\s==");
+                var left = body.Left as MemberExpression;
+                if (left != null) 
+                {
+                    return left.Member.Name;
+                }
             }
-            if (parsedExpression.Contains("!="))
-            {
-                return new Regex(@"\.(.*)\s!=");
-            }
-            if (parsedExpression.Contains(">="))
-            {
-                return new Regex(@"\.(.*)\s>=");
-            }
-            if (parsedExpression.Contains("<="))
-            {
-                return new Regex(@"\.(.*)\s<=");
-            }
-            if (parsedExpression.Contains(">"))
-            {
-                return new Regex(@"\.(.*)\s>");
-            }
-            if (parsedExpression.Contains("<"))
-            {
-                return new Regex(@"\.(.*)\s<");
-            }
-            return new Regex(@"\(.*\.(.*)\)\)");
+            return null;
         }
 
     }

@@ -97,10 +97,12 @@ namespace ExcelService.Models
                 {
                     foreach (Cell cell in row.Cells)
                     {
-                        if (typeof(T).GetProperty(expression.Body.ToString().GetExpressionMethodName())?.GetValue(row.ObjectReference) == cell.Data)
-                        { 
+                        string? resolvedArgString = expression.ResolveArgs();
+                        if (resolvedArgString is not null && typeof(T).GetProperty(resolvedArgString)?.GetValue(row.ObjectReference) == cell.Data)
+                        {
                             cell.SetStyle(style);
                         }
+                        
                     }
                 }
             }
