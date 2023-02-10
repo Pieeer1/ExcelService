@@ -3,7 +3,16 @@
 - Includes Styling based on query or based on location, using base Open XML properties
 - Fast Quick Table Creation and Modification Without DataTable use
 
+# Installation
 
+## Dotnet CLI
+`
+dotnet add package FluentExcelService --version 1.0.1
+`
+## Package Manager  
+`
+NuGet\Install-Package FluentExcelService -Version 1.0.1
+`
 # Usage
 
 ## Locally Saving a File 

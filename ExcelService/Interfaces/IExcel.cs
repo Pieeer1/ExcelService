@@ -27,5 +27,6 @@ namespace ExcelService.Interfaces
         public void RemoveWorkbook(string workbookName);
         public void CombineWorkbooks(Workbook baseWorkbook, Workbook additonalWorkbook);
         public int WorkbookCount();
+        public void ClearWorkbooks();
     }
 }

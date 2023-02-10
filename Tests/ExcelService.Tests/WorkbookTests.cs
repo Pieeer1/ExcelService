@@ -1,6 +1,8 @@
 using ExcelService.Models;
 using System.Drawing;
 using ExcelService.Enums;
+using Microsoft.CSharp.RuntimeBinder;
+
 namespace ExcelService.Tests
 {
     public class WorkbookTests
@@ -210,7 +212,11 @@ namespace ExcelService.Tests
             Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 1, 2].Style);
             Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 1, 3].Style);
         }
-
+        [Fact]
+        public void TestStylingWithWrongType()
+        {
+            Assert.Throws<RuntimeBinderException>(() => noStyleWorkbook.StyleRowWhere<DifferentTestObject>(x => x.E == "A", new Style(Font.Arial, Color.Red, 40)));
+        }
 
         public class TestObject
         {
@@ -218,6 +224,13 @@ namespace ExcelService.Tests
             public string? B { get; set; }
             public int C { get; set; }
             public int D { get; set; }
+        }
+        public class DifferentTestObject
+        { 
+            public string? E { get; set; }
+            public string? F { get; set; }
+            public string? G { get; set; }
+            public string? H { get; set; }
         }
     }
 }
