@@ -79,7 +79,7 @@ excel["TestWorkbook"]?.StyleCellWhere<TestClass>(x => x.Column2 == "b", new Styl
 excel.SaveExcelFileFromWorkbook("../../../test.xlsx", excel["TestWorkbook"] ?? throw new NullReferenceException("Invalid Container"));
 ```
 
-##Dependency Injections
+## Dependency Injections
 ```C#
 //Add Interface and Class as normal... for azure as example:
 services.AddScoped<IExcel, Excel>();
@@ -100,7 +100,7 @@ public class MyDependencyInjectableClass
     }
 }
 ```
-##Saving Stream to a File
+## Saving Stream to a File
 ```C#
 
 _excel.GenerateNewWorkBook(Workbook.GetWorkbookFromDataSet(myEnumerableOfObjects, null, "A WorkSheet Name", "A sheet"));
