@@ -8,7 +8,7 @@ namespace ExcelService.Models
 {
     public class Sheet
     {
-        private Sheet(Row headerRow, IEnumerable<Row> rows, string name)
+        public Sheet(Row headerRow, IEnumerable<Row> rows, string name)
         {
             HeaderRow = headerRow;
             Rows = rows;

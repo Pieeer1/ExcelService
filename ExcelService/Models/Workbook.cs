@@ -8,7 +8,7 @@ namespace ExcelService.Models
 {
     public class Workbook
     {
-        private Workbook(IEnumerable<Sheet> sheets, string? name)
+        public Workbook(IEnumerable<Sheet> sheets, string? name)
         {
             Sheets = sheets;
             Name = name ?? "Workbook";
