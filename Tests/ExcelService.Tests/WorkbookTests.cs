@@ -178,7 +178,41 @@ namespace ExcelService.Tests
             Assert.Equal(12, styles.Select(x => x?.FontSize).ElementAt(1));
             Assert.Equal(8, styles.Select(x => x?.FontSize).ElementAt(2));
         }
-        private class TestObject
+        [Fact]
+        public void TestStyleWhere()
+        {
+            Style aquaLargeText = new Style(Font.Calibri, Color.Aquamarine, 32);
+
+            noStyleWorkbook.StyleRowWhere((TestObject x) => x.A == "A String", aquaLargeText);
+
+            Assert.Equal(aquaLargeText, noStyleWorkbook[0, 0, 0].Style);
+            Assert.Equal(aquaLargeText, noStyleWorkbook[0, 0, 1].Style);
+            Assert.Equal(aquaLargeText, noStyleWorkbook[0, 0, 2].Style);
+            Assert.Equal(aquaLargeText, noStyleWorkbook[0, 0, 3].Style);
+            Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 1, 0].Style);
+            Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 1, 1].Style);
+            Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 1, 2].Style);
+            Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 1, 3].Style);
+        }
+        [Fact]
+        public void TestStyleCellWhere()
+        {
+            Style aquaLargeText = new Style(Font.Calibri, Color.Aquamarine, 32);
+
+            noStyleWorkbook.StyleCellWhere((TestObject x) => x.A == "A String", aquaLargeText);
+
+            Assert.Equal(aquaLargeText, noStyleWorkbook[0, 0, 0].Style);
+            Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 0, 1].Style);
+            Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 0, 2].Style);
+            Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 0, 3].Style);
+            Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 1, 0].Style);
+            Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 1, 1].Style);
+            Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 1, 2].Style);
+            Assert.NotEqual(aquaLargeText, noStyleWorkbook[0, 1, 3].Style);
+        }
+
+
+        public class TestObject
         {
             public string? A { get; set; }
             public string? B { get; set; }

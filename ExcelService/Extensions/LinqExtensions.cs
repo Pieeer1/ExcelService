@@ -33,6 +33,10 @@ namespace ExcelService.Extensions
             }
             return null;
         }
-
+        public static bool IsIEnumerableOfT(this Type type)
+        {
+            return type.GetInterfaces().Any(x => x.IsGenericType
+                   && x.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+        }
     }
 }
