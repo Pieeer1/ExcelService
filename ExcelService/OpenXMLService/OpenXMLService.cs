@@ -30,6 +30,27 @@ namespace ExcelService.OpenXMLService
                 return new Models.Workbook(new List<Models.Sheet>() { new Models.Sheet(new Models.Row(new List<Models.Cell>()), rowList, "A Temporary Sheet Name") }, "A Temporary Workbook Name");
             }
         }
+        public static Models.Workbook GetWorkbookFromFile(Stream stream)
+        {
+            using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(stream, false))
+            {
+                WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart ?? throw new NullReferenceException("Invalid Workbook Part");
+                WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
+                SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+
+                List<Models.Row> rowList = new List<Models.Row>();
+                foreach (DocumentFormat.OpenXml.Spreadsheet.Row row in sheetData.Elements<DocumentFormat.OpenXml.Spreadsheet.Row>())
+                {
+                    List<Models.Cell> cellList = new List<Models.Cell>();
+                    foreach (DocumentFormat.OpenXml.Spreadsheet.Cell cell in row.Elements<DocumentFormat.OpenXml.Spreadsheet.Cell>())
+                    {
+                        cellList.Add(new Models.Cell(cell.CellValue?.Text ?? string.Empty));
+                    }
+                    rowList.Add(new Models.Row(cellList));
+                }
+                return new Models.Workbook(new List<Models.Sheet>() { new Models.Sheet(new Models.Row(new List<Models.Cell>()), rowList, "A Temporary Sheet Name") }, "A Temporary Workbook Name");
+            }
+        }
         public static Stream GetXLSXStreamFromWorkbook(Models.Workbook excelServiceWorkbook)
         {
             if (excelServiceWorkbook.Sheets.Select(x => x.Name) is not null)

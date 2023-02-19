@@ -54,12 +54,12 @@ namespace ExcelService
             RemoveWorkbook(additonalWorkbook);
         }
         public Workbook GetWorkbookFromExcelFile(Stream stream)
-        { 
-            
+        {
+            return GetWorkbookFromFile(stream);
         }
         public Workbook GetWorkbookFromExcelFile(string filePath)
-        { 
-            
+        {
+            return GetWorkbookFromFile(filePath);
         }
 
         public void RemoveWorkbook(Workbook workbook)

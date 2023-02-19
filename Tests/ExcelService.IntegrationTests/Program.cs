@@ -91,8 +91,12 @@ namespace ExcelService.IntegrationTests
 
             }
             else if (responseInt == 2)
-            { 
-                //read workbook
+            {
+                Workbook workbook = excel.GetWorkbookFromExcelFile("../../../test.xlsx");
+
+                Console.WriteLine(workbook[0, 'A', 1].Data);
+                Console.WriteLine(workbook[0, 'A', 2].Data);
+                Console.WriteLine(workbook[0, 'A', 3].Data);
             }
         }
 
