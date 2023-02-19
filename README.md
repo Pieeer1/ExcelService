@@ -7,16 +7,16 @@
 
 ## Dotnet CLI
 `
-dotnet add package FluentExcelService --version 1.0.1
+dotnet add package FluentExcelService --version 1.1.0
 `
 ## Package Manager  
 `
-NuGet\Install-Package FluentExcelService -Version 1.0.1
+NuGet\Install-Package FluentExcelService -Version 1.1.0
 `
 # Usage
 
 ## Locally Saving a File 
-```C#
+```csharp
 Excel excel = new Excel();
 
 excel.GenerateNewWorkBook(new List<TestClass>()
@@ -88,8 +88,19 @@ excel["TestWorkbook"]?.StyleCellWhere<TestClass>(x => x.Column2 == "b", new Styl
 excel.SaveExcelFileFromWorkbook("../../../test.xlsx", excel["TestWorkbook"] ?? throw new NullReferenceException("Invalid Container"));
 ```
 
+##Getting a Workbook From a File
+
+```csharp
+
+Excel excel = new Excel();
+
+Workbook workbook = excel.GetWorkbookFromExcelFile("../../../test.xlsx");
+
+
+```
+
 ## Dependency Injections
-```C#
+```csharp
 //Add Interface and Class as normal... for azure as example:
 services.AddScoped<IExcel, Excel>();
 
@@ -110,7 +121,7 @@ public class MyDependencyInjectableClass
 }
 ```
 ## Saving Stream to a File
-```C#
+```csharp
 
 _excel.GenerateNewWorkBook(Workbook.GetWorkbookFromDataSet(myEnumerableOfObjects, null, "A WorkSheet Name", "A sheet"));
 _excel.GenerateNewWorkBook(Workbook.GetWorkbookFromDataSet(myOtherEnumerableOfObjects, null, "A Second WorkSheet Name", "A sheet"));

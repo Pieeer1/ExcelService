@@ -23,6 +23,8 @@ namespace ExcelService.Interfaces
         public Workbook GetWorkbook(uint index);
         public Stream GetExcelFromWorkBook(Workbook workbook);
         public void SaveExcelFileFromWorkbook(string fileName, Workbook workbook);
+        public Workbook GetWorkbookFromExcelFile(string filePath);
+        public Workbook GetWorkbookFromExcelFile(Stream stream);
         public void RemoveWorkbook(Workbook workbook);
         public void RemoveWorkbook(string workbookName);
         public void CombineWorkbooks(Workbook baseWorkbook, Workbook additonalWorkbook);

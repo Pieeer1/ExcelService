@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using ExcelService.Models;
 using System.Drawing;
 using System.Text;
 
@@ -8,7 +9,48 @@ namespace ExcelService.OpenXMLService
 {
     public static class OpenXMLService
     {
-        // no styles
+        public static Models.Workbook GetWorkbookFromFile(string filePath)
+        {
+            using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(filePath, false))
+            { 
+                WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart ?? throw new NullReferenceException("Invalid Workbook Part");
+                WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
+                SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+
+                List<Models.Row> rowList = new List<Models.Row>();
+                foreach (DocumentFormat.OpenXml.Spreadsheet.Row row in sheetData.Elements<DocumentFormat.OpenXml.Spreadsheet.Row>())
+                {
+                    List<Models.Cell> cellList = new List<Models.Cell>();
+                    foreach (DocumentFormat.OpenXml.Spreadsheet.Cell cell in row.Elements<DocumentFormat.OpenXml.Spreadsheet.Cell>())
+                    {
+                        cellList.Add(new Models.Cell(cell.CellValue?.Text ?? string.Empty));
+                    }
+                    rowList.Add(new Models.Row(cellList));
+                }
+                return new Models.Workbook(new List<Models.Sheet>() { new Models.Sheet(new Models.Row(new List<Models.Cell>()), rowList, "A Temporary Sheet Name") }, "A Temporary Workbook Name");
+            }
+        }
+        public static Models.Workbook GetWorkbookFromFile(Stream stream)
+        {
+            using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(stream, false))
+            {
+                WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart ?? throw new NullReferenceException("Invalid Workbook Part");
+                WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
+                SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+
+                List<Models.Row> rowList = new List<Models.Row>();
+                foreach (DocumentFormat.OpenXml.Spreadsheet.Row row in sheetData.Elements<DocumentFormat.OpenXml.Spreadsheet.Row>())
+                {
+                    List<Models.Cell> cellList = new List<Models.Cell>();
+                    foreach (DocumentFormat.OpenXml.Spreadsheet.Cell cell in row.Elements<DocumentFormat.OpenXml.Spreadsheet.Cell>())
+                    {
+                        cellList.Add(new Models.Cell(cell.CellValue?.Text ?? string.Empty));
+                    }
+                    rowList.Add(new Models.Row(cellList));
+                }
+                return new Models.Workbook(new List<Models.Sheet>() { new Models.Sheet(new Models.Row(new List<Models.Cell>()), rowList, "A Temporary Sheet Name") }, "A Temporary Workbook Name");
+            }
+        }
         public static Stream GetXLSXStreamFromWorkbook(Models.Workbook excelServiceWorkbook)
         {
             if (excelServiceWorkbook.Sheets.Select(x => x.Name) is not null)
@@ -25,7 +67,7 @@ namespace ExcelService.OpenXMLService
             using (var workbook = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
             {
                 var workbookPart = workbook.AddWorkbookPart();
-                workbook.WorkbookPart!.Workbook = new Workbook();
+                workbook.WorkbookPart!.Workbook = new DocumentFormat.OpenXml.Spreadsheet.Workbook();
                 workbook.WorkbookPart.Workbook.Sheets = new Sheets();
 
                 StyleSheetMapperObject? mapper = null;
@@ -50,9 +92,9 @@ namespace ExcelService.OpenXMLService
                     Sheets sheets = workbook.WorkbookPart.Workbook.GetFirstChild<Sheets>() ?? throw new NullReferenceException("Invalid Sheets");
                     string relationshipId = workbook.WorkbookPart.GetIdOfPart(sheetPart);
 
-                    if (sheets!.Elements<Sheet>().Count() > 0)
+                    if (sheets!.Elements<DocumentFormat.OpenXml.Spreadsheet.Sheet>().Count() > 0)
                     {
-                        sheetId = sheets.Elements<Sheet>().Select(s => s.SheetId!.Value).Max() + 1;
+                        sheetId = sheets.Elements<DocumentFormat.OpenXml.Spreadsheet.Sheet>().Select(s => s.SheetId!.Value).Max() + 1;
                     }
 
                     if (excelServiceSheet.Name.Length >= 32)
@@ -60,17 +102,17 @@ namespace ExcelService.OpenXMLService
                         throw new InvalidDataException("Length of Sheet Names Cannot be Longer than 31 Characters");
                     }
 
-                    Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = excelServiceSheet.Name};
+                    DocumentFormat.OpenXml.Spreadsheet.Sheet sheet = new DocumentFormat.OpenXml.Spreadsheet.Sheet() { Id = relationshipId, SheetId = sheetId, Name = excelServiceSheet.Name};
                     sheets.Append(sheet);
 
-                    Row headerRow = new Row();
+                    DocumentFormat.OpenXml.Spreadsheet.Row headerRow = new DocumentFormat.OpenXml.Spreadsheet.Row();
 
                     List<string> columns = new List<string>();
                     foreach (Models.Cell excelServiceCell in excelServiceSheet.HeaderRow.Cells)
                     {
                         columns.Add(excelServiceCell.Data);
 
-                        Cell cell = new Cell();
+                        DocumentFormat.OpenXml.Spreadsheet.Cell cell = new DocumentFormat.OpenXml.Spreadsheet.Cell();
                         cell.DataType = CellValues.String;
                         cell.CellValue = new CellValue(excelServiceCell.Data);
                         headerRow.AppendChild(cell);
@@ -80,10 +122,10 @@ namespace ExcelService.OpenXMLService
 
                     foreach (Models.Row excelServiceRow in excelServiceSheet.Rows)
                     {
-                        Row newRow = new Row();
+                        DocumentFormat.OpenXml.Spreadsheet.Row newRow = new DocumentFormat.OpenXml.Spreadsheet.Row();
                         for (int i = 0; i < excelServiceRow.Cells.Count(); i++)
                         {
-                            Cell cell = new Cell();
+                            DocumentFormat.OpenXml.Spreadsheet.Cell cell = new DocumentFormat.OpenXml.Spreadsheet.Cell();
 
                             //style magic here
                             if (mapper is not null)

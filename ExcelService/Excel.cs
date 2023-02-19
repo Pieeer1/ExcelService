@@ -1,6 +1,6 @@
 ﻿using ExcelService.Interfaces;
 using ExcelService.Models;
-
+using static ExcelService.OpenXMLService.OpenXMLService;
 namespace ExcelService
 {
     public class Excel : IExcel
@@ -40,18 +40,26 @@ namespace ExcelService
         }
         public Stream GetExcelFromWorkBook(Workbook workbook)
         {
-            return OpenXMLService.OpenXMLService.GetXLSXStreamFromWorkbook(workbook);
+            return GetXLSXStreamFromWorkbook(workbook);
         }
         public void SaveExcelFileFromWorkbook(string fileName, Workbook workbook)
         {
             MemoryStream ms = new MemoryStream();
-            OpenXMLService.OpenXMLService.GetXLSXStreamFromWorkbook(workbook).CopyTo(ms);
+            GetXLSXStreamFromWorkbook(workbook).CopyTo(ms);
             File.WriteAllBytes(fileName, ms.ToArray());
         }
         public void CombineWorkbooks(Workbook baseWorkbook, Workbook additonalWorkbook)
         { 
             baseWorkbook.AddWorkbookSheetsToWorkBook(additonalWorkbook);
             RemoveWorkbook(additonalWorkbook);
+        }
+        public Workbook GetWorkbookFromExcelFile(Stream stream)
+        {
+            return GetWorkbookFromFile(stream);
+        }
+        public Workbook GetWorkbookFromExcelFile(string filePath)
+        {
+            return GetWorkbookFromFile(filePath);
         }
 
         public void RemoveWorkbook(Workbook workbook)
