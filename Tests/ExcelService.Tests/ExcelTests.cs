@@ -132,6 +132,23 @@ namespace ExcelService.Tests
             Assert.Equal(2, excel[1].Sheets.Count());
             Assert.Throws<ArgumentOutOfRangeException>(() => excel[2]);
         }
+        [Fact]
+
+        public void TestExcelSheetDownload()
+        {
+            Workbook workbook = excel.GetWorkbookFromExcelFile("../../../Examples/test.xlsx");
+
+            Assert.Equal("a", workbook[0, 'A', 1].Data);
+            Assert.Equal("Column2", workbook[0, 0, 1].Data);
+        }
+        [Fact]
+        public void TestExcelSheetDownloadFromStream()
+        {
+            Workbook workbook = excel.GetWorkbookFromExcelFile(new MemoryStream(File.ReadAllBytes("../../../Examples/test.xlsx")));
+
+            Assert.Equal("a", workbook[0, 'A', 1].Data);
+            Assert.Equal("Column2", workbook[0, 0, 1].Data);
+        }
         private class TestClass
         {
             public string? TestString { get; set; }
