@@ -185,21 +185,21 @@ namespace ExcelService.OpenXMLService
                 FontFamilyNumbering fontFamilyNumbering = new FontFamilyNumbering() { Val = 2 };
                 FontScheme fontScheme = new FontScheme() { Val = FontSchemeValues.Minor };
 
+                if (style.FontStyle == Enums.FontStyle.Underline)
+                {
+                    font.Append(new Underline() { Val = UnderlineValues.Single });
+                }
+                if (style.FontStyle == Enums.FontStyle.Bold)
+                {
+                    font.Append(new Bold());
+                }
+
                 font.Append(fontSize);
                 font.Append(color);
                 font.Append(fontName);
                 font.Append(fontFamilyNumbering);
                 font.Append(fontScheme);
                 fonts.Append(font);
-
-                if (style.FontStyle == Enums.FontStyle.Underline)
-                {
-                    fonts.Append(new Underline() { Val = UnderlineValues.Single });
-                }
-                if (style.FontStyle == Enums.FontStyle.Bold)
-                {
-                    fonts.Append(new Bold());
-                }
 
                 Fill fill = new Fill();
                 if (style.Color is not null)
@@ -251,7 +251,7 @@ namespace ExcelService.OpenXMLService
 
                 cellStyleFormats.Append(cellStyleFormat);
 
-                CellFormat cellFormat = new CellFormat() { NumberFormatId = (UInt32Value)iterator, FontId = (UInt32Value)iterator, FillId = (UInt32Value)iterator, BorderId = (UInt32Value)iterator, FormatId = (UInt32Value)iterator, ApplyFill = true };
+                CellFormat cellFormat = new CellFormat() { NumberFormatId = (UInt32Value)iterator, FontId = (UInt32Value)iterator, FillId = (UInt32Value)iterator, BorderId = (UInt32Value)iterator, FormatId = (UInt32Value)iterator, ApplyFill = true};
 
                 cellFormats.Append(cellFormat);
 
