@@ -172,7 +172,15 @@ namespace ExcelService.OpenXMLService
 
                 Font font = new Font();
                 FontSize fontSize = new FontSize() { Val = style.FontSize ?? 11D };
-                DocumentFormat.OpenXml.Spreadsheet.Color color = new DocumentFormat.OpenXml.Spreadsheet.Color() { Theme = (UInt32Value)1U }; // 1U IS BLACK 0U IS WHITE
+                DocumentFormat.OpenXml.Spreadsheet.Color color = new DocumentFormat.OpenXml.Spreadsheet.Color();
+                if (style.TextColor is null)
+                {
+                    color.Theme = (UInt32Value)1U; // 1U IS BLACK 0U IS WHITE
+                }
+                else
+                {
+                    color.Rgb = HexConverter(style.TextColor ?? throw new NullReferenceException("Invalid Color"));
+                }
                 FontName fontName = new FontName() { Val = style.Font.ToString() ?? "Calibri" };
                 FontFamilyNumbering fontFamilyNumbering = new FontFamilyNumbering() { Val = 2 };
                 FontScheme fontScheme = new FontScheme() { Val = FontSchemeValues.Minor };
@@ -184,6 +192,14 @@ namespace ExcelService.OpenXMLService
                 font.Append(fontScheme);
                 fonts.Append(font);
 
+                if (style.FontStyle == Enums.FontStyle.Underline)
+                {
+                    fonts.Append(new Underline() { Val = UnderlineValues.Single });
+                }
+                if (style.FontStyle == Enums.FontStyle.Bold)
+                {
+                    fonts.Append(new Bold());
+                }
 
                 Fill fill = new Fill();
                 if (style.Color is not null)
@@ -209,6 +225,19 @@ namespace ExcelService.OpenXMLService
                 TopBorder topBorder = new TopBorder();
                 BottomBorder bottomBorder = new BottomBorder();
                 DiagonalBorder diagonalBorder = new DiagonalBorder();
+
+                if (style.Border is not null)
+                {
+                    leftBorder.Style = style.Border.Thickness < 5 ? BorderStyleValues.Thin : style.Border.Thickness < 10 ? BorderStyleValues.Medium : BorderStyleValues.Thick;
+                    rightBorder.Style = style.Border.Thickness < 5 ? BorderStyleValues.Thin : style.Border.Thickness < 10 ? BorderStyleValues.Medium : BorderStyleValues.Thick;
+                    topBorder.Style = style.Border.Thickness < 5 ? BorderStyleValues.Thin : style.Border.Thickness < 10 ? BorderStyleValues.Medium : BorderStyleValues.Thick;
+                    bottomBorder.Style = style.Border.Thickness < 5 ? BorderStyleValues.Thin : style.Border.Thickness < 10 ? BorderStyleValues.Medium : BorderStyleValues.Thick;
+
+                    leftBorder.Append(new DocumentFormat.OpenXml.Spreadsheet.Color() { Rgb = HexConverter(style.Border.Color ?? throw new NullReferenceException("Invalid Color")) });
+                    rightBorder.Append(new DocumentFormat.OpenXml.Spreadsheet.Color() { Rgb = HexConverter(style.Border.Color ?? throw new NullReferenceException("Invalid Color")) });
+                    topBorder.Append(new DocumentFormat.OpenXml.Spreadsheet.Color() { Rgb = HexConverter(style.Border.Color ?? throw new NullReferenceException("Invalid Color")) });
+                    bottomBorder.Append(new DocumentFormat.OpenXml.Spreadsheet.Color() { Rgb = HexConverter(style.Border.Color ?? throw new NullReferenceException("Invalid Color")) });
+                }
 
                 border.Append(leftBorder);
                 border.Append(rightBorder);

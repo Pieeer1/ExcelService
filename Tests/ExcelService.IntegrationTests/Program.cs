@@ -69,7 +69,7 @@ namespace ExcelService.IntegrationTests
                     {
                         Style.Empty(),
                         Style.Empty(),
-                        Style.Empty(),
+                        new Style(textColor: Color.Red, border: new Models.Styles.Border(1, Color.Black)),
                         Style.Empty(),
                         new Style(Enums.Font.Arial, Color.Red, 25),
                         new Style(Enums.Font.Arial, Color.Yellow, 48),
