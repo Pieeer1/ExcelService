@@ -7,11 +7,11 @@
 
 ## Dotnet CLI
 `
-dotnet add package FluentExcelService --version 1.1.0
+dotnet add package FluentExcelService --version 1.2.0
 `
 ## Package Manager  
 `
-NuGet\Install-Package FluentExcelService -Version 1.1.0
+NuGet\Install-Package FluentExcelService -Version 1.2.0
 `
 # Usage
 
