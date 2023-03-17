@@ -23,7 +23,26 @@ namespace ExcelService.OpenXMLService
                     List<Models.Cell> cellList = new List<Models.Cell>();
                     foreach (DocumentFormat.OpenXml.Spreadsheet.Cell cell in row.Elements<DocumentFormat.OpenXml.Spreadsheet.Cell>())
                     {
-                        cellList.Add(new Models.Cell(cell.CellValue?.Text ?? string.Empty));
+                        if (cell.DataType is not null && cell.DataType == CellValues.SharedString && int.TryParse(cell.InnerText, out int id))
+                        {
+                            SharedStringItem? item = GetSharedStringItemById(workbookPart, id);
+                            if (item is not null && item.Text is not null)
+                            {
+                                cellList.Add(new Models.Cell(item.Text.Text ?? string.Empty));
+                            }
+                            else if (item is not null && item.InnerText != null)
+                            {
+                                cellList.Add(new Models.Cell(item.InnerText ?? string.Empty));
+                            }
+                            else if (item is not null && item.InnerXml is not null)
+                            {
+                                cellList.Add(new Models.Cell(item.InnerXml ?? string.Empty));
+                            }
+                        }
+                        else
+                        {
+                            cellList.Add(new Models.Cell(cell.CellValue?.Text ?? string.Empty));
+                        }
                     }
                     rowList.Add(new Models.Row(cellList));
                 }
@@ -44,12 +63,35 @@ namespace ExcelService.OpenXMLService
                     List<Models.Cell> cellList = new List<Models.Cell>();
                     foreach (DocumentFormat.OpenXml.Spreadsheet.Cell cell in row.Elements<DocumentFormat.OpenXml.Spreadsheet.Cell>())
                     {
-                        cellList.Add(new Models.Cell(cell.CellValue?.Text ?? string.Empty));
+                        if (cell.DataType is not null && cell.DataType == CellValues.SharedString && int.TryParse(cell.InnerText, out int id))
+                        {
+                            SharedStringItem? item = GetSharedStringItemById(workbookPart, id);
+                            if (item is not null && item.Text is not null)
+                            {
+                                cellList.Add(new Models.Cell(item.Text.Text ?? string.Empty));
+                            }
+                            else if (item is not null && item.InnerText != null)
+                            {
+                                cellList.Add(new Models.Cell(item.InnerText ?? string.Empty));
+                            }
+                            else if (item is not null && item.InnerXml is not null)
+                            {
+                                cellList.Add(new Models.Cell(item.InnerXml ?? string.Empty));
+                            }
+                        }
+                        else
+                        {
+                            cellList.Add(new Models.Cell(cell.CellValue?.Text ?? string.Empty));
+                        }
                     }
                     rowList.Add(new Models.Row(cellList));
                 }
                 return new Models.Workbook(new List<Models.Sheet>() { new Models.Sheet(new Models.Row(new List<Models.Cell>()), rowList, "A Temporary Sheet Name") }, "A Temporary Workbook Name");
             }
+        }
+        private static SharedStringItem? GetSharedStringItemById(WorkbookPart workbookPart, int id)
+        {
+            return workbookPart?.SharedStringTablePart?.SharedStringTable.Elements<SharedStringItem>().ElementAt(id);
         }
         public static Stream GetXLSXStreamFromWorkbook(Models.Workbook excelServiceWorkbook)
         {

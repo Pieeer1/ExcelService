@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <PackageId>FluentExcelService</PackageId>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>MasonAdams</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Pieeer1/ExcelService</RepositoryUrl>

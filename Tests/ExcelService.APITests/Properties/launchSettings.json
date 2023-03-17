@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "ExcelService.APITests": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7185",
+      "launchBrowser": false
+    }
+  }
+}
