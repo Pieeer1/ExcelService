@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using ExcelService.Enums;
 using ExcelService.Models;
 using System.Drawing;
 using System.Text;
@@ -212,7 +213,7 @@ namespace ExcelService.OpenXMLService
             {
                 //might need to change all 1U to iterator
 
-                Font font = new Font();
+                DocumentFormat.OpenXml.Spreadsheet.Font font = new DocumentFormat.OpenXml.Spreadsheet.Font();
                 FontSize fontSize = new FontSize() { Val = style.FontSize ?? 11D };
                 DocumentFormat.OpenXml.Spreadsheet.Color color = new DocumentFormat.OpenXml.Spreadsheet.Color();
                 if (style.TextColor is null)
@@ -223,10 +224,7 @@ namespace ExcelService.OpenXMLService
                 {
                     color.Rgb = HexConverter(style.TextColor ?? throw new NullReferenceException("Invalid Color"));
                 }
-                FontName fontName = new FontName() { Val = style.Font.ToString() ?? "Calibri" };
-                FontFamilyNumbering fontFamilyNumbering = new FontFamilyNumbering() { Val = 2 };
-                FontScheme fontScheme = new FontScheme() { Val = FontSchemeValues.Minor };
-
+                FontName fontName = new FontName() { Val = style.Font.FontEnumToSpacedString() ?? "Calibri" };
                 if (style.FontStyle == Enums.FontStyle.Underline)
                 {
                     font.Append(new Underline() { Val = UnderlineValues.Single });
@@ -239,8 +237,6 @@ namespace ExcelService.OpenXMLService
                 font.Append(fontSize);
                 font.Append(color);
                 font.Append(fontName);
-                font.Append(fontFamilyNumbering);
-                font.Append(fontScheme);
                 fonts.Append(font);
 
                 Fill fill = new Fill();
@@ -325,7 +321,7 @@ namespace ExcelService.OpenXMLService
         }
         private static void SetDefaults(Fonts fonts, Fills fills, Borders borders, CellStyleFormats cellStyleFormats, CellFormats cellFormats, CellStyles cellStyles, StyleSheetMapperObject mapper)
         {
-            Font font = new Font();
+            DocumentFormat.OpenXml.Spreadsheet.Font font = new DocumentFormat.OpenXml.Spreadsheet.Font();
             FontSize fontSize = new FontSize() { Val = 12D };
             DocumentFormat.OpenXml.Spreadsheet.Color color = new DocumentFormat.OpenXml.Spreadsheet.Color() { Theme = (UInt32Value)1U };
             FontName fontName = new FontName() { Val = "Calibri" };

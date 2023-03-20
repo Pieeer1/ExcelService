@@ -2,7 +2,11 @@
 {
     public enum Font
     {
+        Arial,
+        BahnSchrift,
         Calibri,
-        Arial
+        Cascadia,
+        CascadiaCode,
+        CooperBlack
     }
 }
