@@ -1,5 +1,6 @@
 ﻿using ExcelService;
 using ExcelService.Models;
+using ExcelService.Models.Numerics;
 using System.Drawing;
 
 namespace ExcelService.IntegrationTests
@@ -31,51 +32,51 @@ namespace ExcelService.IntegrationTests
                 {
                     new List<Style>()
                     {
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
                     },
                     new List<Style>()
                     {
                         new Style(Enums.Font.Calibri, Color.Red, 8),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
                         new Style(Enums.Font.Calibri, Color.Red, 8),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
                     },
                     new List<Style>()
                     {
                         new Style(Enums.Font.Calibri, Color.Pink, 8),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
                         new Style(Enums.Font.Arial, Color.Green, 20),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
                     },
                     new List<Style>()
                     {
-                        Style.Empty(),
-                        Style.Empty(),
+                        Style.Empty,
+                        Style.Empty,
                         new Style(textColor: Color.Red, border: new Models.Styles.Border(1, Color.Black)),
-                        Style.Empty(),
+                        Style.Empty,
                         new Style(Enums.Font.Arial, Color.Red, 25),
                         new Style(Enums.Font.Arial, Color.Yellow, 48),
-                        Style.Empty(),
-                        Style.Empty(),
-                        Style.Empty(),
+                        Style.Empty,
+                        Style.Empty,
+                        Style.Empty,
                     },
                 },
                 "TestWorkbook",
@@ -87,8 +88,16 @@ namespace ExcelService.IntegrationTests
 
                 excel["TestWorkbook"]?.StyleCellWhere<TestClass>(x => x.Column2 == "b", new Style(Enums.Font.Calibri, Color.Aqua, 30));
 
-                excel.SaveExcelFileFromWorkbook("../../../test.xlsx", excel["TestWorkbook"] ?? throw new NullReferenceException("Invalid Container"));
-
+                excel["TestWorkbook"]?.Sheets.ElementAt(0).AddTable(new Models.Styles.Table(new UIntVector2(1, 1), new UIntVector2(5, 5), columnNames: new string[] { "Column1", "Column2", "Column3", "Column4", "Column5"}));
+                try
+                {
+                    excel.SaveExcelFileFromWorkbook("../../../test.xlsx", excel["TestWorkbook"] ?? throw new NullReferenceException("Invalid Container"));
+                }
+                catch (IOException)
+                {
+                    Console.WriteLine("Close Excel File Before Proceeding. \n\nRestarting...\n");
+                    Main(args);
+                }
             }
             else if (responseInt == 2)
             {

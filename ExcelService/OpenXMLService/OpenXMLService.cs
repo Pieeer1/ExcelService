@@ -1,8 +1,10 @@
 ﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelService.Enums;
 using ExcelService.Models;
+using ExcelService.Models.Numerics;
 using System.Drawing;
 using System.Text;
 
@@ -131,6 +133,14 @@ namespace ExcelService.OpenXMLService
                     var sheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
                     var sheetData = new SheetData();
                     sheetPart.Worksheet = new Worksheet(sheetData);
+
+                    if (excelServiceSheet.Tables?.Any() ?? false)
+                    {
+                        foreach (Models.Styles.Table table in excelServiceSheet.Tables)
+                        {
+                            DefineTable(sheetPart, table);
+                        }
+                    }
 
                     Sheets sheets = workbook.WorkbookPart.Workbook.GetFirstChild<Sheets>() ?? throw new NullReferenceException("Invalid Sheets");
                     string relationshipId = workbook.WorkbookPart.GetIdOfPart(sheetPart);
@@ -319,6 +329,45 @@ namespace ExcelService.OpenXMLService
 
             return mapper;
         }
+        private static Table DefineTable(WorksheetPart worksheetPart, Models.Styles.Table table)
+        {
+            TableDefinitionPart tableDefinitionPart = worksheetPart.AddNewPart<TableDefinitionPart>("rId" + (worksheetPart.TableDefinitionParts.Count() + 1));
+            int tableNo = worksheetPart.TableDefinitionParts.Count();
+
+            string reference = ((char)(64 + table.StartIndexes.Y)).ToString() + table.StartIndexes.X + ":" + ((char)(64 + table.EndIndexes.Y)).ToString() + table.EndIndexes.X;
+            Table outTable = new Table() { Id = (uint)tableNo, Name = "Table" + tableNo, DisplayName = "Table" + tableNo, Reference = reference, TotalsRowShown = false };
+            AutoFilter autoFilter = new AutoFilter() { Reference = reference };
+            TableColumns tableColumns = new TableColumns() { Count = (table.EndIndexes.Y - table.StartIndexes.Y + 1) };
+            for (int i = 0; i < (table.EndIndexes.Y - table.StartIndexes.Y + 1); i++)
+            {
+                tableColumns.Append(new TableColumn() { Id = (uint)(table.StartIndexes.Y + i), Name = table.ColumnNames?[i] ?? ("Column" + i) });
+            }
+
+            TableStyleInfo tableStyleInfo = new TableStyleInfo() { Name = "TableStyleLight1", ShowFirstColumn = false, ShowLastColumn = false, ShowRowStripes = true, ShowColumnStripes = false };
+
+            outTable.Append(autoFilter);
+            outTable.Append(tableColumns);
+            outTable.Append(tableStyleInfo);
+
+            tableDefinitionPart.Table = outTable;
+
+            TableParts? tableParts = worksheetPart.Worksheet.ChildElements.FirstOrDefault(ce => ce is TableParts) as TableParts; // Add table parts only once
+            if (tableParts is null)
+            {
+                tableParts = new TableParts();
+                tableParts.Count = 0;
+                worksheetPart.Worksheet.Append(tableParts);
+            }
+#pragma warning disable CS8604 // Possible null reference argument. // cannot suppress but it will not be null
+            tableParts.Count += 1;
+#pragma warning restore CS8604 // Possible null reference argument.
+
+            TablePart tablePart = new TablePart() { Id = "rId" + tableNo };
+
+            tableParts.Append(tablePart);
+
+            return outTable;
+        }
         private static void SetDefaults(Fonts fonts, Fills fills, Borders borders, CellStyleFormats cellStyleFormats, CellFormats cellFormats, CellStyles cellStyles, StyleSheetMapperObject mapper)
         {
             DocumentFormat.OpenXml.Spreadsheet.Font font = new DocumentFormat.OpenXml.Spreadsheet.Font();
@@ -362,7 +411,7 @@ namespace ExcelService.OpenXMLService
             cellFormats.Append(cellFormat);
             CellStyle cellStyle = new CellStyle() { Name = "Normal", FormatId = (UInt32Value)0U, BuiltinId = (UInt32Value)0U };
             cellStyles.Append(cellStyle);
-            mapper.StyleMapperDictionary.Add(Models.Style.Empty(), 0);
+            mapper.StyleMapperDictionary.Add(Models.Style.Empty, 0);
         }
         private class StyleSheetMapperObject
         {

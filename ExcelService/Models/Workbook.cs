@@ -117,7 +117,7 @@ namespace ExcelService.Models
         {
             HashSet<Style> styles = new HashSet<Style>
             {
-                Style.Empty(), // default
+                Style.Empty, // default
                 new Style(Font.Arial ,Color.Gray, 409) // need to add a second default to the registry to load in
             };
             foreach (Sheet sheets in Sheets)
