@@ -1,25 +1,26 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using ExcelService.Extensions;
+﻿using ExcelService.Extensions;
+using ExcelService.Models.Styles;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Serialization;
 
 namespace ExcelService.Models
 {
     public class Sheet
     {
-        public Sheet(Row headerRow, IEnumerable<Row> rows, string name)
+        public Sheet(Row headerRow, IEnumerable<Row> rows, string name, IEnumerable<Table>? tables = null)
         {
             HeaderRow = headerRow;
             Rows = rows;
             Name = name;
+            Tables = tables ?? new List<Table>();
         }
         public Row HeaderRow { get; private set; }
         public IEnumerable<Row> Rows { get; private set; }
         public string Name { get; private set; }
+        public IEnumerable<Table>? Tables { get; private set; }
 
 
-        public static Sheet GetSheetFromDataSet<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles, string sheetName)
+        public static Sheet GetSheetFromDataSet<T>(IEnumerable<T> objects, IEnumerable<IEnumerable<Style>>? styles, string sheetName, IEnumerable<Table>? tables = null)
         {
             List<Row> rows = new List<Row>();
             string firstProperty = string.Empty;
@@ -38,7 +39,7 @@ namespace ExcelService.Models
                 rows.Add(Row.GenerateRowFromObject(objects.ElementAt(i), styles?.ElementAt(i+1)));
             }
 
-            return new Sheet(new Row(cells, styles?.ElementAt(0)), rows, sheetName);
+            return new Sheet(new Row(cells, styles?.ElementAt(0)), rows, sheetName, tables);
         }
         public Cell this[uint x, uint y]
         {
@@ -102,10 +103,10 @@ namespace ExcelService.Models
                         {
                             cell.SetStyle(style);
                         }
-                        
                     }
                 }
             }
         }
+        public void AddTable(Table table) => Tables = Tables?.Concat(new List<Table>() { table });
     }
 }

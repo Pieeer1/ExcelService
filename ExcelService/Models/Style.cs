@@ -24,9 +24,6 @@ namespace ExcelService.Models
         public Color? TextColor { get; set; }
         public Border? Border { get; set; }
 
-        public static Style Empty()
-        {
-            return new Style();
-        }
+        public static Style Empty => new Style();
     }
 }

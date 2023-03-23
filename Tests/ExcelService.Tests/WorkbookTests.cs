@@ -57,8 +57,8 @@ namespace ExcelService.Tests
                     Font = Font.Arial,
                     FontSize= 8,
                 },
-                Style.Empty(),
-                Style.Empty()
+                Style.Empty,
+                Style.Empty
             },
             new List<Style>()
             {
@@ -74,8 +74,8 @@ namespace ExcelService.Tests
                     Font = Font.Arial,
                     FontSize= 8,
                 },
-                Style.Empty(),
-                Style.Empty()
+                Style.Empty,
+                Style.Empty
             },
             new List<Style>()
             {
@@ -91,8 +91,8 @@ namespace ExcelService.Tests
                     Font = Font.Arial,
                     FontSize= 8,
                 },
-                Style.Empty(),
-                Style.Empty()
+                Style.Empty,
+                Style.Empty
             },
         }
         );
