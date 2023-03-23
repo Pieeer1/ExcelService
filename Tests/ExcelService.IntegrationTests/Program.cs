@@ -83,7 +83,7 @@ namespace ExcelService.IntegrationTests
 
                 excel["TestWorkbook"]?.StyleRowWhere<TestClass>(x => x.Column1 == "a", new Style(Enums.Font.Arial, Color.Green, 65, Enums.FontStyle.Underline, Color.AliceBlue, new Models.Styles.Border(6, Color.Black)));
 
-                excel["TestWorkbook"]?.StyleRowWhere<TestClass>(x => x.Column1 == "n", new Style(Enums.Font.Arial, Color.Red, 25));
+                excel["TestWorkbook"]?.StyleRowWhere<TestClass>(x => x.Column1 == "n", new Style(Enums.Font.CascadiaCode, Color.Red, 25));
 
                 excel["TestWorkbook"]?.StyleCellWhere<TestClass>(x => x.Column2 == "b", new Style(Enums.Font.Calibri, Color.Aqua, 30));
 
